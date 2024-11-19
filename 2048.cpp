@@ -60,6 +60,7 @@ Plateau déplacementDroite(Plateau plateau){
             }
         }
     }
+    return plateau;
 }
 Plateau déplacementHaut(Plateau plateau){
     for (int i = 0; i<plateau.size(); i++){
@@ -70,6 +71,7 @@ Plateau déplacementHaut(Plateau plateau){
             }
         }
     }
+    return plateau;
 }
 int main(){
     affichePlateauTab(plateauVide());
