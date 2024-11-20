@@ -12,9 +12,10 @@ using Plateau = vector<vector<int>>;
 // CELLE DE GAUCHE (même chose + balayement différent des indices et fonctionne au top)
 // ajout fonction dessinebis je retente dessine + tard
 // ajout fonction estgagnant pas testé
+// modif rand() dans tireDeuxOuQuatre() et dans PlateauInitial()
 //////////////////////////////////////////////////
 int tireDeuxOuQuatre(){
-    int proba = 1 + rand() % 11;
+    int proba = 1 + rand() % 10; // Choisi un nombre entre 1 et 10
     if (proba <= 9){
         return 2;
     }
@@ -43,8 +44,8 @@ Plateau plateauInitial(){
     int colonne;
     t = plateauVide();
     for(int i = 0; i < 2; i++){ //2 tours de boucle car 2 cases aléatoires
-        ligne = rand() % 3; //indice de ligne aléatoire entre 0 et 3
-        colonne = rand() % 3; //indice de colonne aléatoire entre 0 et 3
+        ligne = rand() % 4; //indice de ligne aléatoire entre 0 et 3
+        colonne = rand() % 4; //indice de colonne aléatoire entre 0 et 3
         t[ligne][colonne] = tireDeuxOuQuatre(); //la case du tableau aléatoire
     }
     return t; //retour du tableau
