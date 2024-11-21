@@ -4,6 +4,7 @@
 #include <iostream>
 #include <random>
 #include <iomanip>
+#include <curses.h> // ajout curses.h jsp pq pour l'instant
 using namespace std;
 using Plateau = vector<vector<int>>;
 
@@ -11,18 +12,13 @@ void Tutoriel(){
     char reponse;
     cout << "Bienvenue sur le 2048 de Huỳnh anh et Auguste ! " << endl;
     cout << "Connais-tu les règles du jeu ? [o/n]" << endl;
-    cin >> réponse;
-    if (reponse == 'o'){
+    cin >> reponse;
+    if (reponse == 'n'){ 
         cout << "flm de copier coller et les retours et tt mais t'as capté" << endl;
-        cout << "C'est parti !" << endl;
     }
-    if (reponse == 'n'){
+    if (reponse == 'o'){
         cout << "D'accord ! Que le jeu commence !" << endl;
     }
-    else { while (reponse != 'n' or reponse != 'o'){
-           cout << "Choisis bien entre o (oui) et n (non) !" << endl;
-           cin >> reponse;
-     }}
 }
 
 int Score(Plateau plateau){
