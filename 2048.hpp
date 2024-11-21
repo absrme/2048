@@ -3,9 +3,18 @@
 using namespace std;
 
 using Plateau = vector<vector<int>>;
+// A faire documentation déplacement() et dessinebis()
 
-// Vous pouvez ajouter des fonctions à ce fichier si besoin est
+/** Affiche les règles du 2048
+ * @return un affichage selon la réponse à la question
+ */
+void Tutoriel();
 
+/** Calcule le score à un instant de la partie
+ * @param plateau un plateau 
+ * @return le score
+ */
+int Score(Plateau plateau);
 /** génère aléatoirement un 2 ou un 4 avec des probabilités respectives de 9/10 et 1/10
  *  @return 2 ou 4
  **/
@@ -21,10 +30,17 @@ Plateau plateauVide();
  **/
 Plateau plateauInitial();
 
+/** Ajoute un élément dans le plateau aléatoirement
+ * @param plateau le plateau
+ * @return le plateau avec une nouvelle case contenant 2 ou 4 placé aléatoirement (dans une case vide)
+ */
+Plateau plateauPartie(Plateau plateau);
+
 /** déplace les tuiles d'un plateau vers la gauche et les combine si possible
  *  @param plateau le plateau
  *  @return le plateau une fois déplacé vers la gauche
  **/
+
 Plateau déplacementGauche(Plateau plateau);
 
 /** déplace les tuiles d'un plateau vers la droite et les combine si possible
@@ -50,8 +66,7 @@ Plateau déplacementBas(Plateau plateau);
  *  @param direction la direction
  *  @return le plateau déplacé dans la direction
  **/
-Plateau déplacement(Plateau plateau, int direction);
-
+// Plateau déplacement(Plateau plateau, int direction);
 /** affiche un plateau
  * @param p le plateau
  **/

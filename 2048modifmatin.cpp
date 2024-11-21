@@ -4,17 +4,31 @@
 #include <iostream>
 #include <random>
 #include <iomanip>
-#include <curses.h> // ajout curses.h jsp pq pour l'instant
+#include <curses.h> // ajout curses.h jsp pq pour l'instant 
 using namespace std;
 using Plateau = vector<vector<int>>;
+// !!!!!!!!!!!!! SUPER IMPORTANT !!!!!!!!!!!!! si tu veux compiler, il faut rajouter -lncurses en argument
+// pour la bibliothèque curses.h :
+// sudo apt-get install libncurses5-dev libncursesw5-dev
+// Reste à compléter de la même manière déplacementBas
+// Petite modification à faire sur le score pour avoir le changement seulement lorsque deux cases se somment
+// Rattraper le cas lorsque l'utilisateur ne mets pas un char
+// Manque fonct° s'il n'y a plus de mouvements possible
 
 void Tutoriel(){
     char reponse;
     cout << "Bienvenue sur le 2048 de Huỳnh anh et Auguste ! " << endl;
     cout << "Connais-tu les règles du jeu ? [o/n]" << endl;
     cin >> reponse;
-    if (reponse == 'n'){
+    if (reponse == '1'){
         cout << "flm de copier coller et les retours et tt mais t'as capté" << endl;
+    } 
+    if (reponse == 'n'){
+        cout << "C'est un jeu de plateau 4x4 qui contient des puissances de 2 !";
+        cout << " Tu peux déplacer ces puissances en utilisant les touches du clavier Z,Q,S ou D";
+        cout << " et si deux tuiles sont adjacentes et glissement est dans la bonne direction,";
+        cout << " alors tu gagnes des points et elles se combinent ! À chaque déplacement";
+        cout << ", une nouvelle puissance apparaît, à toi de jouer maintenant !" << endl;
     }
     if (reponse == 'o'){
         cout << "D'accord ! Que le jeu commence !" << endl;
@@ -124,7 +138,7 @@ Plateau déplacementGauche(Plateau plateau){
                     plateau[i][j-1] = plateau[i][j-1] * 2;
                     plateau[i][j] = 0;
                 }
-                if (plateau[i][j-1] == 0 or plateau[i][j-1]==plateau[i][j]){
+                if (plateau[i][j-1] == 0 and plateau[i][j-1] != plateau[i][j]){
                     plateau[i][j-1] = plateau[i][j];
                     plateau[i][j]=0;
                 }
@@ -136,15 +150,23 @@ Plateau déplacementGauche(Plateau plateau){
 }
 
 Plateau déplacementHaut(Plateau plateau){
-    for (int i = 0; i<plateau.size()-1; i++){
-        for (int j = 0; j<plateau[i].size(); j++){
-            if (plateau[i+1][j] == 0 or plateau[i][j]==plateau[i+1][j]){
-                plateau[i+1][j] = plateau[i][j];
-                plateau[i][j]=0;
+    for (int i = 0; i < plateau.size(); i++){
+        int rep = 0;
+        while (rep != 3){
+            for (int j = plateau[i].size() - 1; j > 0; j--){
+                if (plateau[j][i] == plateau[j-1][i]){
+                    plateau[j-1][i] = plateau[j-1][i] * 2;
+                    plateau[j][i] = 0;
+                }
+                if (plateau[j-1][i] == 0 and plateau[j][i] != 0){
+                    plateau[j-1][i] = plateau[j][i];
+                    plateau[j][i] = 0;
+                }
             }
+            rep++;
         }
     }
-    return plateau;
+     return plateau;
 }
 
 Plateau déplacementBas(Plateau plateau){
@@ -252,7 +274,7 @@ int main(){
     Tutoriel();
     // Déroulement d'une partie 
     Plateau t;
-    char Touche;
+    char Touche; 
     t = plateauInitial();
     dessinebis(t);
     while(true){
@@ -262,7 +284,7 @@ int main(){
         cout << "Voici le plateau après ton déplacement !" << endl;
         dessinebis(déplacement(t,Touche));
         t = plateauPartie(t);
-        dessinebis(t);
         cout << "Voici le tableau après un placement aléatoire !" << endl;
+        dessinebis(t);
     }
 }
