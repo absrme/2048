@@ -20,7 +20,7 @@ void Tutoriel(){
         cout << "D'accord ! Que le jeu commence !" << endl;
         cout << "C'est parti !" << endl;
     }
-    else { while (reponse != 'n' or reponse != 'o'){
+    else { while (reponse != 'n' and reponse != 'o'){
            cout << "Choisis bien entre o (oui) et n (non) !" << endl;
            cin >> reponse;
      }}
@@ -71,14 +71,29 @@ Plateau plateauInitial(){
     }
     return t; //retour du tableau
 }
-void affichePlateau(Plateau t){
-    for (int i = 0; i < t.size();i++){
-        for (int k = 0; k < t[i].size(); k++){
-            cout << t[i][k] << " "; //affiche les cases du tableau de la ligne i
+
+Plateau plateauPartie(Plateau t){
+    int ligne; 
+    int colonne;
+    while (true){
+        ligne = rand() % 4;
+        colonne = rand () % 4;
+        if (t[ligne][colonne] == 0){ // Si la case est vide, place le nombre tiré aléatoirement
+            t[ligne][colonne] = tireDeuxOuQuatre();
+            break;
         }
-        cout << endl; //retour à la ligne avant de passer à la ligne suivante
     }
+    return t;
 }
+
+// void affichePlateau(Plateau t){
+//     for (int i = 0; i < t.size();i++){
+//         for (int k = 0; k < t[i].size(); k++){
+//             cout << t[i][k] << " "; //affiche les cases du tableau de la ligne i
+//         }
+//         cout << endl; //retour à la ligne avant de passer à la ligne suivante
+//     }
+// }
 
 Plateau déplacementDroite(Plateau plateau){
      for (int i = 0; i<plateau.size(); i++){
@@ -207,9 +222,8 @@ bool estGagnant(Plateau plateau){
     }
     return false;
 }
-int main(){
+void test(){
     char Touche;
-    Tutoriel();
     cout << "Test rapide que les fonctions marchent..." << endl;
     cout << "Affichage du plateau vide..." << endl;
     dessinebis(plateauVide());
@@ -225,4 +239,19 @@ int main(){
     cin >> Touche;
     dessinebis(déplacement(t2,Touche));
     dessinebis(déplacement(t4,Touche));
+}
+int main(){
+    Tutoriel();
+    // Déroulement d'une partie 
+    Plateau t;
+    char Touche;
+    t = plateauInitial();
+    while(true){
+        dessinebis(t);
+        cout << "Z,Q,S,D ?" << endl;
+        cin >> Touche;
+        t = déplacement(t,Touche);
+        dessinebis(déplacement(t,Touche));
+        t = plateauPartie(t);
+    }
 }
