@@ -97,15 +97,19 @@ Plateau plateauPartie(Plateau t){
 
 Plateau déplacementDroite(Plateau plateau){
      for (int i = 0; i<plateau.size(); i++){
-        for (int j = 0; j < plateau[i].size()-1; j++){
-            if (plateau[i][j] == plateau[i][j+1]){ // Si deux cases consécutives sont les mêmes
-                plateau[i][j+1] = plateau[i][j+1] * 2;
-                plateau[i][j] = 0;
+        int répétition = 0;
+        while (répétition != 3){ // Permet de s'assurer que toutes les cases sont différentes et bien placés
+            for (int j = 0; j < plateau[i].size()-1; j++){
+                if (plateau[i][j] == plateau[i][j+1]){ // Si deux cases consécutives sont les mêmes
+                    plateau[i][j+1] = plateau[i][j+1] * 2;
+                    plateau[i][j] = 0;
+                }
+                if (plateau[i][j+1] == 0 and plateau[i][j] != 0){ // Déplacement de la case si deux cases consécutives sont différentes
+                    plateau[i][j+1] = plateau[i][j];
+                    plateau[i][j] = 0;
+                }
             }
-            if (plateau[i][j+1] == 0 and plateau[i][j] != 0){ // Déplacement de la case si deux cases consécutives sont différentes
-                plateau[i][j+1] = plateau[i][j];
-                plateau[i][j] = 0;
-            }
+            répétition++;
         }
     }
     return plateau;
@@ -113,15 +117,19 @@ Plateau déplacementDroite(Plateau plateau){
 
 Plateau déplacementGauche(Plateau plateau){
      for (int i =plateau.size() - 1; i >= 0; i--){
-        for (int j = plateau[i].size() - 1; j >= 1; j--){
-            if (plateau[i][j-1] == plateau[i][j]){
-                plateau[i][j-1] = plateau[i][j-1] * 2;
-                plateau[i][j] = 0;
+        int répétition = 0;
+        while(répétition != 3){ // Permet de s'assurer que toutes les cases sont différentes et bien placés
+            for (int j = plateau[i].size() - 1; j >= 1; j--){
+                if (plateau[i][j-1] == plateau[i][j]){
+                    plateau[i][j-1] = plateau[i][j-1] * 2;
+                    plateau[i][j] = 0;
+                }
+                if (plateau[i][j-1] == 0 or plateau[i][j-1]==plateau[i][j]){
+                    plateau[i][j-1] = plateau[i][j];
+                    plateau[i][j]=0;
+                }
             }
-            if (plateau[i][j-1] == 0 or plateau[i][j-1]==plateau[i][j]){
-                plateau[i][j-1] = plateau[i][j];
-                plateau[i][j]=0;
-            }
+            répétition++;
         }
     }
     return plateau;
@@ -246,12 +254,15 @@ int main(){
     Plateau t;
     char Touche;
     t = plateauInitial();
+    dessinebis(t);
     while(true){
-        dessinebis(t);
-        cout << "Z,Q,S,D ?" << endl;
+        cout << "Choisi une touche entre Z,Q,S,D !" << endl;
         cin >> Touche;
         t = déplacement(t,Touche);
+        cout << "Voici le plateau après ton déplacement !" << endl;
         dessinebis(déplacement(t,Touche));
         t = plateauPartie(t);
+        dessinebis(t);
+        cout << "Voici le tableau après un placement aléatoire !" << endl;
     }
 }
