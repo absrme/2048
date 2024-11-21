@@ -138,22 +138,22 @@ Plateau déplacementBas(Plateau plateau){
 Plateau déplacement(Plateau plateau, char Touche){
     if (Touche == 'z'){
         plateau = déplacementHaut(plateau);
-        cout << "Score : ", Score(plateau)  << endl;
+        cout << "Score : " << Score(plateau)  << endl;
         return plateau;
     }
     if (Touche == 'q'){
         plateau = déplacementGauche(plateau);
-        cout << "Score : ", Score(plateau)  << endl;
+        cout << "Score : " << Score(plateau)  << endl;
         return plateau;
     }
     if (Touche == 's'){
         plateau = déplacementBas(plateau);
-        cout << "Score : ", Score(plateau)  << endl;
+        cout << "Score : " << Score(plateau)  << endl;
         return plateau;
     }
     if (Touche == 'd'){
         plateau = déplacementDroite(plateau);
-        cout << "Score : ", Score(plateau)  << endl;
+        cout << "Score : " << Score(plateau)  << endl;
         return plateau;
     }
     cout << "La touche n'est pas reconnue..." << endl;
