@@ -18,6 +18,7 @@ void Tutoriel(){
     if (reponse == 'n'){
         cout << "D'accord ! Que le jeu commence !" << endl;
     }
+}
 
 int Score(Plateau plateau){
     int score = 0;
