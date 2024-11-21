@@ -13,12 +13,17 @@ void Tutoriel(){
     cout << "Bienvenue sur le 2048 de Huỳnh anh et Auguste ! " << endl;
     cout << "Connais-tu les règles du jeu ? [o/n]" << endl;
     cin >> reponse;
-    if (reponse == 'n'){ 
+    if (reponse == 'n'){
         cout << "flm de copier coller et les retours et tt mais t'as capté" << endl;
     }
     if (reponse == 'o'){
         cout << "D'accord ! Que le jeu commence !" << endl;
+        cout << "C'est parti !" << endl;
     }
+    else { while (reponse != 'n' or reponse != 'o'){
+           cout << "Choisis bien entre o (oui) et n (non) !" << endl;
+           cin >> reponse;
+     }}
 }
 
 int Score(Plateau plateau){
