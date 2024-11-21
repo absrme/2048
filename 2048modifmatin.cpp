@@ -7,7 +7,27 @@
 using namespace std;
 using Plateau = vector<vector<int>>;
 
+void Tutoriel(){
+    char reponse;
+    cout << "Bienvenue sur le 2048 de Huỳnh anh et Auguste ! " << endl;
+    cout << "Connais-tu les règles du jeu ? [o/n]" << endl;
+    cin << réponse;
+    if (reponse == 'o'){
+        cout << "flm de copier coller et les retours et tt mais t'as capté" << endl;
+    }
+    if (reponse == 'n'){
+        cout << "D'accord ! Que le jeu commence !" << endl;
+    }
 
+int Score(Plateau plateau){
+    int score = 0;
+    for(int i = 0; i<plateau.size(); i++){
+        for (int j = 0; j<plateau[i].size(); j++){
+            score = score + plateau[i][j];
+        }
+    }
+    return score;
+}
 int tireDeuxOuQuatre(){
     int proba = 1 + rand() % 10;
     if (proba <= 9){
@@ -117,18 +137,22 @@ Plateau déplacementBas(Plateau plateau){
 Plateau déplacement(Plateau plateau, char Touche){
     if (Touche == 'z'){
         plateau = déplacementHaut(plateau);
+        cout << "Score : ", Score(plateau)  << endl;
         return plateau;
     }
     if (Touche == 'q'){
         plateau = déplacementGauche(plateau);
+        cout << "Score : ", Score(plateau)  << endl;
         return plateau;
     }
     if (Touche == 's'){
         plateau = déplacementBas(plateau);
+        cout << "Score : ", Score(plateau)  << endl;
         return plateau;
     }
     if (Touche == 'd'){
         plateau = déplacementDroite(plateau);
+        cout << "Score : ", Score(plateau)  << endl;
         return plateau;
     }
     cout << "La touche n'est pas reconnue..." << endl;
@@ -178,6 +202,7 @@ bool estGagnant(Plateau plateau){
 }
 int main(){
     char Touche;
+    Tutoriel();
     cout << "Test rapide que les fonctions marchent..." << endl;
     cout << "Affichage du plateau vide..." << endl;
     dessinebis(plateauVide());
