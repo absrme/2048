@@ -10,7 +10,6 @@ using Plateau = vector<vector<int>>;
 // !!!!!!!!!!!!! SUPER IMPORTANT !!!!!!!!!!!!! si tu veux compiler, il faut rajouter -lncurses en argument
 // pour la bibliothèque curses.h :
 // sudo apt-get install libncurses5-dev libncursesw5-dev
-// Reste à compléter de la même manière déplacementBas
 // Petite modification à faire sur le score pour avoir le changement seulement lorsque deux cases se somment
 // Rattraper le cas lorsque l'utilisateur ne mets pas un char
 // Manque fonct° s'il n'y a plus de mouvements possible
@@ -232,11 +231,11 @@ void dessinebis(Plateau p){
             else{
                 string valeur = to_string(p[ligne][colonne]);
                 int taille = (to_string(p[ligne][colonne])).size();
-                if (taille == 1){ // Si p[ligne][colonne] < 10 (Seulement 1 chiffre)
+                if (taille == 1){ // Si p[ligne][colonne] < 10 (composé de 1 ou 2 chiffres)
                     valeur.push_back(' ');
                     valeur.push_back(' ');
                 }
-                if (taille == 3 or taille == 2){ // Si p[ligne][colonne] < 1000 (le nombre contient 2 ou 3 chiffres)
+                else if (taille <= 4){ // Si p[ligne][colonne] < 10000 (le nombre contient 3 ou 4 chiffres)
                     valeur.push_back(' ');
                 }
                 cout << "*" << setw(espacement) << valeur;
@@ -299,6 +298,8 @@ void testVilain(){
     if (estEgal(déplacementDroite({{0,0,0,0},{0,4,4,4},{0,0,0,0},{0,0,0,0}}),t)){
         cout << "yeepee" << endl;
     }
+    t = {{2048,0,16,10000},{0,0,4,16},{0,32,0,0},{0,4096,128,0}};
+    dessinebis(t);
 }
 int main(){
     Tutoriel();
