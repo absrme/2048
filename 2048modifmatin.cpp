@@ -109,38 +109,38 @@ Plateau plateauPartie(Plateau t){
 //     }
 // }
 
+
 Plateau déplacementDroite(Plateau plateau){
-     for (int i = 0; i<plateau.size(); i++){
-        int répétition = 0;
-        while (répétition != 3){ // Permet de s'assurer que toutes les cases sont différentes et bien placés
-            for (int j = 0; j < plateau[i].size()-1; j++){
-                if (plateau[i][j] == plateau[i][j+1]){ // Si deux cases consécutives sont les mêmes
-                    plateau[i][j+1] = plateau[i][j+1] * 2;
-                    plateau[i][j] = 0;
+    for(int i = 0; i < plateau.size();i++){
+        int rep = 0;
+        while (rep != 3){
+            for (int j = plateau[i].size() - 1; j > 0 ; j--){
+                if (plateau[i][j-1] == plateau[i][j]){
+                    plateau[i][j] *= 2;
+                    plateau[i][j-1] = 0;
                 }
-                if (plateau[i][j+1] == 0 and plateau[i][j] != 0){ // Déplacement de la case si deux cases consécutives sont différentes
-                    plateau[i][j+1] = plateau[i][j];
-                    plateau[i][j] = 0;
+                if (plateau[i][j-1] != 0 and plateau[i][j] == 0){
+                    plateau[i][j] = plateau[i][j-1];
+                    plateau[i][j-1] = 0;
                 }
             }
-            répétition++;
+            rep++;
         }
     }
     return plateau;
 }
-
 Plateau déplacementGauche(Plateau plateau){
-     for (int i =plateau.size() - 1; i >= 0; i--){
+     for (int i =0; i < plateau.size(); i++){
         int répétition = 0;
         while(répétition != 3){ // Permet de s'assurer que toutes les cases sont différentes et bien placés
-            for (int j = plateau[i].size() - 1; j >= 1; j--){
-                if (plateau[i][j-1] == plateau[i][j]){
-                    plateau[i][j-1] = plateau[i][j-1] * 2;
-                    plateau[i][j] = 0;
+            for (int j = 0; j < plateau[i].size() - 1; j++){
+                if (plateau[i][j+1] == plateau[i][j]){
+                    plateau[i][j] *= 2;
+                    plateau[i][j+1] = 0;
                 }
-                if (plateau[i][j-1] == 0 and plateau[i][j-1] != plateau[i][j]){
-                    plateau[i][j-1] = plateau[i][j];
-                    plateau[i][j]=0;
+                if (plateau[i][j] == 0 and plateau[i][j+1] != 0){
+                    plateau[i][j] = plateau[i][j+1];
+                    plateau[i][j+1] = 0;
                 }
             }
             répétition++;
@@ -149,18 +149,18 @@ Plateau déplacementGauche(Plateau plateau){
     return plateau;
 }
 
-Plateau déplacementHaut(Plateau plateau){
+Plateau déplacementBas(Plateau plateau){
     for (int i = 0; i < plateau.size(); i++){
         int rep = 0;
         while (rep != 3){
             for (int j = plateau[i].size() - 1; j > 0; j--){
-                if (plateau[j][i] == plateau[j-1][i]){
-                    plateau[j-1][i] = plateau[j-1][i] * 2;
-                    plateau[j][i] = 0;
+                if (plateau[j-1][i] == plateau[j][i]){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
+                    plateau[j][i] *= 2;
+                    plateau[j-1][i] = 0;
                 }
-                if (plateau[j-1][i] == 0 and plateau[j][i] != 0){
-                    plateau[j-1][i] = plateau[j][i];
-                    plateau[j][i] = 0;
+                if (plateau[j-1][i] != 0 and plateau[j][i] == 0){
+                    plateau[j][i] = plateau[j-1][i];
+                    plateau[j-1][i] = 0;
                 }
             }
             rep++;
@@ -169,13 +169,21 @@ Plateau déplacementHaut(Plateau plateau){
      return plateau;
 }
 
-Plateau déplacementBas(Plateau plateau){
-    for (int i = 1; i<plateau.size(); i++){
-        for (int j = 0; j<plateau[i].size(); j++){
-            if (plateau[i-1][j] == 0 or plateau[i][j]==plateau[i-1][j]){
-                plateau[i-1][j] = plateau[i][j];
-                plateau[i][j]=0;
+Plateau déplacementHaut(Plateau plateau){
+    for (int i = 0; i<plateau.size(); i++){
+        int loop = 0;
+        while (loop != 3){
+            for (int j = 0; j<plateau[i].size() - 1; j++){
+                if (plateau[j][i] == plateau[j+1][i]){
+                    plateau[j][i] *= 2;
+                    plateau[j+1][i] = 0;
+                }
+                if (plateau[j][i] == 0 and plateau[j+1][i] != 0){
+                    plateau[j][i] = plateau[j+1][i];
+                    plateau[j+1][i] = 0;
+                }
             }
+            loop++;
         }
     }
     return plateau;
@@ -241,7 +249,16 @@ void dessinebis(Plateau p){
         }
     cout << endl;
 }
-
+bool estEgal(Plateau plateau, Plateau plateau1){
+    for (int i = 0; i < plateau.size(); i++){
+        for (int j = 0; j < plateau[i].size(); j++){
+            if (plateau[i][j] != plateau1[i][j]){
+                return false;
+            }
+        }
+    }
+    return true;
+}
 bool estGagnant(Plateau plateau){
     for(int i = 0; i < plateau.size(); i++){
         for (int k = 0; k < plateau[0].size(); k++){
@@ -270,6 +287,19 @@ void test(){
     dessinebis(déplacement(t2,Touche));
     dessinebis(déplacement(t4,Touche));
 }
+
+void testVilain(){
+    vector<vector<int>>(t);
+    t = vector<vector<int>>(4);
+    t = {{0,0,0,0},{0,0,4,16},{0,0,0,0},{0,0,0,0}};
+    if (estEgal(déplacementDroite({{0,0,0,0},{2,2,8,8},{0,0,0,0},{0,0,0,0}}),t)){
+        cout << "yeepee" << endl;
+    }
+    t = {{0,0,0,0},{0,0,4,8},{0,0,0,0},{0,0,0,0}};
+    if (estEgal(déplacementDroite({{0,0,0,0},{0,4,4,4},{0,0,0,0},{0,0,0,0}}),t)){
+        cout << "yeepee" << endl;
+    }
+}
 int main(){
     Tutoriel();
     // Déroulement d'une partie 
@@ -287,4 +317,5 @@ int main(){
         cout << "Voici le tableau après un placement aléatoire !" << endl;
         dessinebis(t);
     }
+    // testVilain();
 }
