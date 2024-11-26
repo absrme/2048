@@ -7,6 +7,8 @@
 #include <curses.h> // ajout curses.h jsp pq pour l'instant 
 #include <cstdio>
 #include <fstream> 
+#include <chrono>
+#include <thread>
 using namespace std;
 using Plateau = vector<vector<int>>;
 // !!!!!!!!!!!!! SUPER IMPORTANT !!!!!!!!!!!!! si tu veux compiler, il faut rajouter -lncurses en argument
@@ -17,24 +19,23 @@ using Plateau = vector<vector<int>>;
 // Manque fonct° s'il n'y a plus de mouvements possible
 
 void HighScoreTXT(){ 
-ofstream outfile ("highscore.txt");
+    ofstream outfile ("highscore.txt");
     // METTRE NAME
 }
-void 
 
 void ASCII2048(){
     cout << R"(
 
                                               ,---.-,    
                                        ,--,  '   ,'  '.  
-          ,----,     ,----..         ,--.'| /   /      \ 
+          ,----,     ,----..         ,--.'| /   /      \.
         .'   .' \   /   /   \     ,--,  | :.   ;  ,/.  : 
       ,----,'    | /   .     : ,---.'|  : ''   |  | :  ; 
       |    :  .  ;.   /   ;.  \;   : |  | ;'   |  ./   : 
       ;    |.'  /.   ;   /  ` ;|   | : _' ||   :       , 
       `----'/  ; ;   |  ; \ ; |:   : |.'  | \   \     /  
-        /  ;  /  |   :  | ; | '|   ' '  ; :  ;   ,   '\  
-       ;  /  /-, .   |  ' ' ' :\   \  .'. | /   /      \ 
+        /  ;  /  |   :  | ; | '|   ' '  ; :  ;   ,   '\.  
+       ;  /  /-, .   |  ' ' ' :\   \  .'. | /   /      \.
       /  /  /.`| '   ;  \; /  | `---`:  | '.   ;  ,/.  : 
     ./__;      :  \   \  ',  /       '  ; |'   |  | :  ; 
     |   :    .'    ;   :    /        |  : ;'   |  ./   : 
@@ -57,24 +58,34 @@ void Tutoriel(){
             break;
         } 
         if (reponse == 'n'){
-            cout << "C'est un jeu de plateau 4x4 qui contient des puissances de 2 !";
-            cout << " Tu peux déplacer ces puissances en utilisant les touches du clavier Z,Q,S ou D";
-            cout << " et si deux tuiles sont adjacentes et que le glissement des tuiles est dans ";
-            cout << "la bonne direction, alors, tu gagnes des points et elles se combinent ! ";
-            cout << "À chaque déplacement, une nouvelle puissance apparaît, à toi de jouer maintenant !" << endl;
+            string non = "C'est un jeu de plateau 4x4 qui contient des puissances de 2 ! Tu peux déplacer ces puissances en utilisant les touches du clavier Z,Q,S ou D et si deux tuiles sont adjacentes et que le glissement des tuiles est dans la bonne direction, alors, tu gagnes des points et elles se combinent ! À chaque déplacement, une nouvelle puissance apparaît, à toi de jouer maintenant !";
+            for (int i = 0; i < non.size(); i++){
+                cout << non[i] << flush;
+                this_thread::sleep_for(chrono::milliseconds(50)); // Attente de 50 ms après chaque affichage
+            }
+            this_thread::sleep_for(chrono::seconds(1));
+            cout << endl;
             break;
         }
         if (reponse == 'o'){
-            cout << "OK ! Que le jeu commence !" << endl;
-            cout << "C'est parti !" << endl;
+            string oui = "OK ! Que le jeu commence !";
+            for (auto valeur:oui){
+                cout << valeur << flush;
+                this_thread::sleep_for(chrono::milliseconds(50));
+            }
+            cout << endl;
+            this_thread::sleep_for(chrono::seconds(1));
             break;
         }
-        else { while (reponse != 'n' and reponse != 'o'){
+        else { 
+            while (reponse != 'n' and reponse != 'o'){
                cout << "Choisis bien entre o (oui) et n (non) !" << endl;
                cin >> reponse;
             break;
-     }}
-}}
+            }
+        }
+    }
+}
 
 int Score(Plateau plateau){
     int score = 0;
@@ -340,6 +351,8 @@ void testVilain(){
 }
 
 int main(){
+    ASCII2048();
+    this_thread::sleep_for(chrono::milliseconds(800));
     Tutoriel();
     // Déroulement d'une partie 
     Plateau t;
@@ -358,4 +371,3 @@ int main(){
     }
     // testVilain();
 }
-
