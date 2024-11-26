@@ -133,12 +133,12 @@ Plateau plateauInitial(){
     return t; //retour du tableau
 }
 
-Plateau plateauPartie(Plateau t){
+Plateau plateauPlacementAléatoire(Plateau t){
     int ligne; 
     int colonne;
-    while (true){
-        ligne = rand() % 4;
-        colonne = rand () % 4;
+    while (true){ // Boucle continue tant que l'indice n'est pas placé
+        ligne = rand() % 4; // Choisi un indice de ligne aléatoire entre 0 et 3
+        colonne = rand () % 4; // Choisi un indice de colonne aléatoire entre 0 et 3
         if (t[ligne][colonne] == 0){ // Si la case est vide, place le nombre tiré aléatoirement
             t[ligne][colonne] = tireDeuxOuQuatre();
             break;
@@ -159,38 +159,54 @@ Plateau plateauPartie(Plateau t){
 
 Plateau déplacementDroite(Plateau plateau){
     for(int i = 0; i < plateau.size();i++){
-        int rep = 0;
-        while (rep != 3){
-            for (int j = plateau[i].size() - 1; j > 0 ; j--){
-                if (plateau[i][j-1] == plateau[i][j]){
-                    plateau[i][j] *= 2;
-                    plateau[i][j-1] = 0;
-                }
+        int loop = 0;
+        while (loop != 3){ // 3 tours de boucle dans le cas extrême où l'indice != 0 se trouve tout à gauche
+            for (int j = plateau[i].size() - 1; j > 0; j--){ // Déplace les tuiles vers la droite
                 if (plateau[i][j-1] != 0 and plateau[i][j] == 0){
                     plateau[i][j] = plateau[i][j-1];
                     plateau[i][j-1] = 0;
                 }
             }
-            rep++;
+            loop++;
+        }
+        for (int j = plateau[i].size() - 1; j > 0 ; j--){ // Si deux tuiles consécutives sont égales 
+            if (plateau[i][j-1] == plateau[i][j]){
+                plateau[i][j] *= 2;
+                plateau[i][j-1] = 0;
+            }
+        }
+        for (int j = plateau[i].size() - 1; j > 0; j--){ // Tour de boucle pour remettre les tuiles après les avoir ajoutées
+            if (plateau[i][j-1] != 0 and plateau[i][j] == 0){
+                plateau[i][j] = plateau[i][j-1];
+                plateau[i][j-1] = 0;
+            }
         }
     }
     return plateau;
 }
 Plateau déplacementGauche(Plateau plateau){
      for (int i =0; i < plateau.size(); i++){
-        int répétition = 0;
-        while(répétition != 3){ // Permet de s'assurer que toutes les cases sont différentes et bien placés
-            for (int j = 0; j < plateau[i].size() - 1; j++){
-                if (plateau[i][j+1] == plateau[i][j]){
-                    plateau[i][j] *= 2;
-                    plateau[i][j+1] = 0;
-                }
+        int loop = 0;
+        while(loop != 3){ // 3 tours de boucle dans le cas extrême où l'indice != 0 se trouve tout à droite
+            for (int j = 0; j < plateau[i].size() -1; j++){ // Déplace les tuiles vers la gauche
                 if (plateau[i][j] == 0 and plateau[i][j+1] != 0){
                     plateau[i][j] = plateau[i][j+1];
                     plateau[i][j+1] = 0;
                 }
             }
-            répétition++;
+            loop++;
+        }
+        for (int j = 0; j < plateau[i].size() - 1; j++){ // Assemble les tuiles consécutives égales
+            if (plateau[i][j+1] == plateau[i][j]){
+                plateau[i][j] *= 2;
+                plateau[i][j+1] = 0;
+            }
+        }
+        for (int j = 0; j < plateau[i].size() -1; j++){ // Remets les tuiles après l'assemblage des tuiles
+            if (plateau[i][j] == 0 and plateau[i][j+1] != 0){
+                plateau[i][j] = plateau[i][j+1];
+                plateau[i][j+1] = 0;
+            }
         }
     }
     return plateau;
@@ -198,19 +214,27 @@ Plateau déplacementGauche(Plateau plateau){
 
 Plateau déplacementBas(Plateau plateau){
     for (int i = 0; i < plateau.size(); i++){
-        int rep = 0;
-        while (rep != 3){
+        int loop = 0;
+        while (loop != 3){
             for (int j = plateau[i].size() - 1; j > 0; j--){
-                if (plateau[j-1][i] == plateau[j][i]){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
-                    plateau[j][i] *= 2;
-                    plateau[j-1][i] = 0;
-                }
                 if (plateau[j-1][i] != 0 and plateau[j][i] == 0){
                     plateau[j][i] = plateau[j-1][i];
                     plateau[j-1][i] = 0;
                 }
             }
-            rep++;
+            loop++;
+        }
+        for (int j = plateau[i].size() - 1; j > 0; j--){
+            if (plateau[j-1][i] == plateau[j][i]){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
+                plateau[j][i] *= 2;
+                plateau[j-1][i] = 0;
+            }
+        }
+        for (int j = plateau[i].size() - 1; j > 0; j--){
+            if (plateau[j-1][i] != 0 and plateau[j][i] == 0){
+                plateau[j][i] = plateau[j-1][i];
+                plateau[j-1][i] = 0;
+            }
         }
     }
      return plateau;
@@ -219,12 +243,8 @@ Plateau déplacementBas(Plateau plateau){
 Plateau déplacementHaut(Plateau plateau){
     for (int i = 0; i<plateau.size(); i++){
         int loop = 0;
-        while (loop != 3){
-            for (int j = 0; j<plateau[i].size() - 1; j++){
-                if (plateau[j][i] == plateau[j+1][i]){
-                    plateau[j][i] *= 2;
-                    plateau[j+1][i] = 0;
-                }
+        while(loop != 3){
+            for (int j = 0; j < plateau[i].size() - 1; j++){
                 if (plateau[j][i] == 0 and plateau[j+1][i] != 0){
                     plateau[j][i] = plateau[j+1][i];
                     plateau[j+1][i] = 0;
@@ -232,14 +252,21 @@ Plateau déplacementHaut(Plateau plateau){
             }
             loop++;
         }
+        for (int j = 0; j<plateau[i].size() - 1; j++){
+            if (plateau[j][i] == plateau[j+1][i]){
+                plateau[j][i] *= 2;
+                plateau[j+1][i] = 0;
+            }
+        }
+        for (int j = 0; j < plateau[i].size() - 1; j++){
+            if (plateau[j][i] == 0 and plateau[j+1][i] != 0){
+                plateau[j][i] = plateau[j+1][i];
+                plateau[j+1][i] = 0;
+            }
+        }
     }
     return plateau;
 }
-
-//////////////////////////////////////////////////////
-//Je suppose pour celui-ci qu'on a déjà placé les inputs
-//du style ZQSD !!!!!!!!!!!!!!
-////////////////////////////////////////////////////////
 
 Plateau déplacement(Plateau plateau, char Touche){
     if (Touche == 'z'){
@@ -340,14 +367,18 @@ void testVilain(){
     t = vector<vector<int>>(4);
     t = {{0,0,0,0},{0,0,4,16},{0,0,0,0},{0,0,0,0}};
     if (estEgal(déplacementDroite({{0,0,0,0},{2,2,8,8},{0,0,0,0},{0,0,0,0}}),t)){
-        cout << "yeepee" << endl;
+        cout << "atchoum" << endl;
     }
     t = {{0,0,0,0},{0,0,4,8},{0,0,0,0},{0,0,0,0}};
     if (estEgal(déplacementDroite({{0,0,0,0},{0,4,4,4},{0,0,0,0},{0,0,0,0}}),t)){
-        cout << "yeepee" << endl;
+        cout << "à tes souhaits" << endl;
     }
-    t = {{2048,0,16,10000},{0,0,4,16},{0,32,0,0},{0,4096,128,0}};
-    dessinebis(t);
+    t = {{0,0,0,0},{0,0,2,4},{0,0,0,0},{0,0,0,0}};
+    if (estEgal(déplacementDroite({{0,0,0,0},{2,2,0,2},{0,0,0,0},{0,0,0,0}}),t)){ // working OK
+        cout << "merce" << endl;
+    }
+    // t = {{2048,0,16,10000},{0,0,4,16},{0,32,0,0},{0,4096,128,0}};
+    // dessinebis(t);
 }
 
 int main(){
@@ -362,12 +393,13 @@ int main(){
     while(true){
         cout << "Choisi une touche entre Z,Q,S,D !" << endl;
         cin >> Touche;
-        t = déplacement(t,Touche);
         cout << "Voici le plateau après ton déplacement !" << endl;
-        dessinebis(déplacement(t,Touche));
-        t = plateauPartie(t);
-        cout << "Voici le tableau après un placement aléatoire !" << endl;
+        t = déplacement(t,Touche);
         dessinebis(t);
-    }
+        cout << "Voici le tableau après un placement aléatoire !" << endl;
+        t = plateauPlacementAléatoire(t);
+        dessinebis(t);
+     }
+    // dessinebis(déplacementDroite({{0,0,0,0},{0,4,4,4},{0,0,0,0},{0,0,0,0}}));
     // testVilain();
 }
