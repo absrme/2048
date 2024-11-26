@@ -5,6 +5,7 @@
 #include <random>
 #include <iomanip>
 #include <curses.h> // ajout curses.h jsp pq pour l'instant 
+#include <cstdio>
 using namespace std;
 using Plateau = vector<vector<int>>;
 // !!!!!!!!!!!!! SUPER IMPORTANT !!!!!!!!!!!!! si tu veux compiler, il faut rajouter -lncurses en argument
@@ -13,31 +14,59 @@ using Plateau = vector<vector<int>>;
 // Petite modification à faire sur le score pour avoir le changement seulement lorsque deux cases se somment
 // Rattraper le cas lorsque l'utilisateur ne mets pas un char
 // Manque fonct° s'il n'y a plus de mouvements possible
+void ASCII2048(){
+    cout << R"(
+
+                                              ,---.-,    
+                                       ,--,  '   ,'  '.  
+          ,----,     ,----..         ,--.'| /   /      \ 
+        .'   .' \   /   /   \     ,--,  | :.   ;  ,/.  : 
+      ,----,'    | /   .     : ,---.'|  : ''   |  | :  ; 
+      |    :  .  ;.   /   ;.  \;   : |  | ;'   |  ./   : 
+      ;    |.'  /.   ;   /  ` ;|   | : _' ||   :       , 
+      `----'/  ; ;   |  ; \ ; |:   : |.'  | \   \     /  
+        /  ;  /  |   :  | ; | '|   ' '  ; :  ;   ,   '\  
+       ;  /  /-, .   |  ' ' ' :\   \  .'. | /   /      \ 
+      /  /  /.`| '   ;  \; /  | `---`:  | '.   ;  ,/.  : 
+    ./__;      :  \   \  ',  /       '  ; |'   |  | :  ; 
+    |   :    .'    ;   :    /        |  : ;'   |  ./   : 
+    ;   | .'        \   \ .'         '  ,/ |   :      /  
+    `---'            `---`           '--'   \   \   .'   
+                                             `---`-'     
+    
+    )" << endl;
+}
+
 
 void Tutoriel(){
     char reponse;
     cout << "Bienvenue sur le 2048 de Huỳnh anh et Auguste ! " << endl;
     cout << "Connais-tu les règles du jeu ? [o/n]" << endl;
     cin >> reponse;
-    if (reponse == '1'){
-        cout << "flm de copier coller et les retours et tt mais t'as capté" << endl;
-    } 
-    if (reponse == 'n'){
-        cout << "C'est un jeu de plateau 4x4 qui contient des puissances de 2 !";
-        cout << " Tu peux déplacer ces puissances en utilisant les touches du clavier Z,Q,S ou D";
-        cout << " et si deux tuiles sont adjacentes et glissement est dans la bonne direction,";
-        cout << " alors tu gagnes des points et elles se combinent ! À chaque déplacement";
-        cout << ", une nouvelle puissance apparaît, à toi de jouer maintenant !" << endl;
-    }
-    if (reponse == 'o'){
-        cout << "D'accord ! Que le jeu commence !" << endl;
-        cout << "C'est parti !" << endl;
-    }
-    else { while (reponse != 'n' and reponse != 'o'){
-           cout << "Choisis bien entre o (oui) et n (non) !" << endl;
-           cin >> reponse;
+    while(true){
+        if (reponse == 'X'){
+            cout << "super" << endl;
+            break;
+        } 
+        if (reponse == 'n'){
+            cout << "C'est un jeu de plateau 4x4 qui contient des puissances de 2 !";
+            cout << " Tu peux déplacer ces puissances en utilisant les touches du clavier Z,Q,S ou D";
+            cout << " et si deux tuiles sont adjacentes et que le glissement des tuiles est dans ";
+            cout << "la bonne direction, alors, tu gagnes des points et elles se combinent ! ";
+            cout << "À chaque déplacement, une nouvelle puissance apparaît, à toi de jouer maintenant !" << endl;
+            break;
+        }
+        if (reponse == 'o'){
+            cout << "OK ! Que le jeu commence !" << endl;
+            cout << "C'est parti !" << endl;
+            break;
+        }
+        else { while (reponse != 'n' and reponse != 'o'){
+               cout << "Choisis bien entre o (oui) et n (non) !" << endl;
+               cin >> reponse;
+            break;
      }}
-}
+}}
 
 int Score(Plateau plateau){
     int score = 0;
@@ -301,6 +330,7 @@ void testVilain(){
     t = {{2048,0,16,10000},{0,0,4,16},{0,32,0,0},{0,4096,128,0}};
     dessinebis(t);
 }
+
 int main(){
     Tutoriel();
     // Déroulement d'une partie 
@@ -320,3 +350,4 @@ int main(){
     }
     // testVilain();
 }
+
