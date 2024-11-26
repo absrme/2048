@@ -4,7 +4,7 @@
 #include <iostream>
 #include <random>
 #include <iomanip>
-#include <curses.h> // ajout curses.h jsp pq pour l'instant 
+#include <curses.h> 
 #include <cstdio>
 #include <fstream> 
 #include <chrono>
@@ -60,7 +60,7 @@ void Tutoriel(){
         if (reponse == 'n'){
             string non = "C'est un jeu de plateau 4x4 qui contient des puissances de 2 ! Tu peux déplacer ces puissances en utilisant les touches du clavier Z,Q,S ou D et si deux tuiles sont adjacentes et que le glissement des tuiles est dans la bonne direction, alors, tu gagnes des points et elles se combinent ! À chaque déplacement, une nouvelle puissance apparaît, à toi de jouer maintenant !";
             for (int i = 0; i < non.size(); i++){
-                cout << non[i] << flush;
+                cout << non[i] << flush; // flush permet d'afficher directement et de ne pas attendre que le buffer/tampon est plein
                 this_thread::sleep_for(chrono::milliseconds(50)); // Attente de 50 ms après chaque affichage
             }
             this_thread::sleep_for(chrono::seconds(1));
@@ -125,9 +125,9 @@ Plateau plateauInitial(){
     int ligne;
     int colonne;
     t = plateauVide();
-    for(int i = 0; i < 2; i++){ //2 tours de boucle car 2 cases aléatoires
-        ligne = rand() % 4; //indice de ligne aléatoire entre 0 et 3
-        colonne = rand() % 4; //indice de colonne aléatoire entre 0 et 3
+    for(int i = 0; i < 2; i++){ //2 tours de boucle pour 2 cases aléatoires
+        ligne = rand() % 4; // Choisi aléatoirement un indice de ligne entre 0 et 3
+        colonne = rand() % 4; // De même pour la colonne
         t[ligne][colonne] = tireDeuxOuQuatre(); //la case du tableau aléatoire
     }
     return t; //retour du tableau
@@ -138,7 +138,7 @@ Plateau plateauPlacementAléatoire(Plateau t){
     int colonne;
     while (true){ // Boucle continue tant que l'indice n'est pas placé
         ligne = rand() % 4; // Choisi un indice de ligne aléatoire entre 0 et 3
-        colonne = rand () % 4; // Choisi un indice de colonne aléatoire entre 0 et 3
+        colonne = rand () % 4; // De même pour colonne
         if (t[ligne][colonne] == 0){ // Si la case est vide, place le nombre tiré aléatoirement
             t[ligne][colonne] = tireDeuxOuQuatre();
             break;
