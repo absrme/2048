@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <curses.h> // ajout curses.h jsp pq pour l'instant 
 #include <cstdio>
+#include <fstream> 
 using namespace std;
 using Plateau = vector<vector<int>>;
 // !!!!!!!!!!!!! SUPER IMPORTANT !!!!!!!!!!!!! si tu veux compiler, il faut rajouter -lncurses en argument
@@ -14,6 +15,13 @@ using Plateau = vector<vector<int>>;
 // Petite modification à faire sur le score pour avoir le changement seulement lorsque deux cases se somment
 // Rattraper le cas lorsque l'utilisateur ne mets pas un char
 // Manque fonct° s'il n'y a plus de mouvements possible
+
+void HighScoreTXT(){ 
+ofstream outfile ("highscore.txt");
+    // METTRE NAME
+}
+void 
+
 void ASCII2048(){
     cout << R"(
 
