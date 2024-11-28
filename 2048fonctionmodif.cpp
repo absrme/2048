@@ -1,0 +1,436 @@
+#include <cstdlib>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <random>
+#include <iomanip>
+#include <curses.h> 
+#include <cstdio>
+#include <fstream> 
+#include <chrono>
+#include <thread>
+
+#define RESET   "\033[0m"
+#define WHITE   "\033[37m"      /* White */
+#define BLUE    "\033[34m"      /* Blue */
+#define MAGENTA "\033[35m"      /* Magenta */
+#define CYAN    "\033[36m"      /* Cyan */
+
+using namespace std;
+using Plateau = vector<vector<int>>;
+// !!!!!!!!!!!!! SUPER IMPORTANT !!!!!!!!!!!!! si tu veux compiler, il faut rajouter -lncurses en argument
+// pour la bibliothèque curses.h :
+// sudo apt-get install libncurses5-dev libncursesw5-dev
+// Petite modification à faire sur le score pour avoir le changement seulement lorsque deux cases se somment
+// Rattraper le cas lorsque l'utilisateur ne mets pas un char
+// Manque fonct° s'il n'y a plus de mouvements possible
+
+void HighScoreTXT(){ 
+    ofstream outfile ("highscore.txt");
+    // METTRE NAME
+}
+
+void ASCII2048(){
+    cout << R"(
+
+                                              ,---.-,    
+                                       ,--,  '   ,'  '.  
+          ,----,     ,----..         ,--.'| /   /      \.
+        .'   .' \   /   /   \     ,--,  | :.   ;  ,/.  : 
+      ,----,'    | /   .     : ,---.'|  : ''   |  | :  ; 
+      |    :  .  ;.   /   ;.  \;   : |  | ;'   |  ./   : 
+      ;    |.'  /.   ;   /  ` ;|   | : _' ||   :       , 
+      `----'/  ; ;   |  ; \ ; |:   : |.'  | \   \     /  
+        /  ;  /  |   :  | ; | '|   ' '  ; :  ;   ,   '\.  
+       ;  /  /-, .   |  ' ' ' :\   \  .'. | /   /      \.
+      /  /  /.`| '   ;  \; /  | `---`:  | '.   ;  ,/.  : 
+    ./__;      :  \   \  ',  /       '  ; |'   |  | :  ; 
+    |   :    .'    ;   :    /        |  : ;'   |  ./   : 
+    ;   | .'        \   \ .'         '  ,/ |   :      /  
+    `---'            `---`           '--'   \   \   .'   
+                                             `---`-'     
+    
+    )" << endl;
+}
+
+
+void Tutoriel(){
+    char reponse;
+    cout << "Bienvenue sur le 2048 de Huỳnh anh et Auguste ! " << endl;
+    cout << "Connais-tu les règles du jeu ? [o/n]" << endl;
+    cin >> reponse;
+    while(true){
+        if (reponse == 'X'){
+            cout << "super" << endl;
+            break;
+        } 
+        if (reponse == 'n'){
+            string non = "C'est un jeu de plateau 4x4 qui contient des puissances de 2 ! Tu peux déplacer ces puissances en utilisant les touches du clavier Z,Q,S ou D et si deux tuiles sont adjacentes et que le glissement des tuiles est dans la bonne direction, alors, tu gagnes des points et elles se combinent ! À chaque déplacement, une nouvelle puissance apparaît, à toi de jouer maintenant !";
+            for (int i = 0; i < non.size(); i++){
+                cout << non[i] << flush; // flush permet d'afficher directement et de ne pas attendre que le buffer/tampon est plein
+                this_thread::sleep_for(chrono::milliseconds(40)); // Attente de 40 ms après chaque affichage
+            }
+            this_thread::sleep_for(chrono::seconds(1));
+            cout << endl;
+            break;
+        }
+        if (reponse == 'o'){
+            string oui = "OK ! Que le jeu commence !";
+            for (auto valeur:oui){
+                cout << valeur << flush;
+                this_thread::sleep_for(chrono::milliseconds(40));
+            }
+            cout << endl;
+            this_thread::sleep_for(chrono::seconds(1));
+            break;
+        }
+        else { 
+            while (reponse != 'n' and reponse != 'o'){
+               cout << "Choisis bien entre o (oui) et n (non) !" << endl;
+               cin >> reponse;
+            break;
+            }
+        }
+    }
+}
+
+int Score(Plateau plateau){
+    int score = 0;
+    for(int i = 0; i<plateau.size(); i++){
+        for (int j = 0; j<plateau[i].size(); j++){
+            score = score + plateau[i][j];
+        }
+    }
+    return score;
+}
+int tireDeuxOuQuatre(){
+    int proba = 1 + rand() % 10;
+    if (proba <= 9){
+        return 2;
+    }
+    else {
+        return 4;
+    }
+}
+
+Plateau plateauVide(){
+    Plateau t;
+    t = Plateau(4);
+    for (int i = 0; i < 4; i++){
+        t[i] = vector<int>(4);
+    }
+    for (int i = 0; i < 4; i++){
+        for (int k = 0; k < 4; k++){
+            t[i][k] = 0;
+        }
+    }
+    return t;
+}
+
+Plateau plateauInitial(){
+    Plateau t;
+    int ligne;
+    int colonne;
+    t = plateauVide();
+    for(int i = 0; i < 2; i++){ //2 tours de boucle pour 2 cases aléatoires
+        ligne = rand() % 4; // Choisi aléatoirement un indice de ligne entre 0 et 3
+        colonne = rand() % 4; // De même pour la colonne
+        t[ligne][colonne] = tireDeuxOuQuatre(); //la case du tableau aléatoire
+    }
+    return t; //retour du tableau
+}
+
+Plateau plateauPlacementAléatoire(Plateau t){
+    int ligne; 
+    int colonne;
+    while (true){ // Boucle continue tant que l'indice n'est pas placé
+        ligne = rand() % 4; // Choisi un indice de ligne aléatoire entre 0 et 3
+        colonne = rand () % 4; // De même pour colonne
+        if (t[ligne][colonne] == 0){ // Si la case est vide, place le nombre tiré aléatoirement
+            t[ligne][colonne] = tireDeuxOuQuatre();
+            break;
+        }
+    }
+    return t;
+}
+
+// void affichePlateau(Plateau t){
+//     for (int i = 0; i < t.size();i++){
+//         for (int k = 0; k < t[i].size(); k++){
+//             cout << t[i][k] << " "; //affiche les cases du tableau de la ligne i
+//         }
+//         cout << endl; //retour à la ligne avant de passer à la ligne suivante
+//     }
+// }
+
+Plateau prochainCoup(Plateau plateau, int ligne, int colonne, string direction, string mouvement){
+    if (direction == "droite"){
+        if (plateau[ligne][colonne] == plateau[ligne][colonne - 1] and mouvement == "somme"){
+            plateau[ligne][colonne] *= 2;
+        }
+        else if (plateau[ligne][colonne] == 0 and plateau[ligne][colonne - 1] != 0 and mouvement == "glissement"){
+            plateau[ligne][colonne] = plateau[ligne][colonne - 1];
+        }
+        else {
+            return plateau;
+        }
+        plateau[ligne][colonne - 1] = 0;
+        return plateau;
+    }
+    if (direction == "gauche"){
+        if(plateau[ligne][colonne] == plateau[ligne][colonne + 1] and mouvement == "somme"){
+            plateau[ligne][colonne] *= 2;
+        }
+        else if (plateau[ligne][colonne] == 0 and plateau[ligne][colonne + 1] != 0 and mouvement == "glissement"){
+            plateau[ligne][colonne] = plateau[ligne][colonne + 1];
+        }
+        else {
+            return plateau;
+        }
+        plateau[ligne][colonne + 1] = 0;
+        return plateau;
+    }
+    if (direction == "bas"){
+        if(plateau[colonne][ligne] == plateau[colonne - 1][ligne] and mouvement == "somme"){
+            plateau[colonne][ligne] *= 2;
+        }
+        else if(plateau[colonne][ligne] == 0 and plateau[colonne - 1][ligne] != 0 and mouvement == "glissement"){
+            plateau[colonne][ligne] = plateau[colonne - 1][ligne];
+        }
+        else {
+            return plateau;
+        }
+        plateau[colonne - 1][ligne] = 0;
+        return plateau;
+    }
+    if (direction == "haut"){
+        if(plateau[colonne][ligne] == plateau[colonne + 1][ligne] and mouvement == "somme"){
+            plateau[colonne][ligne] *= 2;
+        }
+        else if (plateau[colonne][ligne] == 0 and plateau[colonne + 1][ligne] != 0 and mouvement == "glissement"){
+            plateau[colonne][ligne] = plateau[colonne + 1][ligne];
+        }
+        else {
+            return plateau;
+        }
+        plateau[colonne + 1][ligne] = 0;
+        return plateau;
+    }
+    return plateau;
+}
+
+Plateau déplacementDroite(Plateau plateau){
+    for(int i = 0; i < plateau.size();i++){
+        int loop = 0;
+        while (loop != 3){ // 3 tours de boucle dans le cas extrême où l'indice != 0 se trouve tout à gauche
+            for (int j = plateau[i].size() - 1; j > 0; j--){ // Déplace les tuiles vers la droite
+                plateau = prochainCoup(plateau, i, j, "droite", "glissement");
+            }
+            loop++;
+        }
+        for (int j = plateau[i].size() - 1; j > 0 ; j--){ // Si deux tuiles consécutives sont égales 
+            plateau = prochainCoup(plateau, i, j, "droite", "somme");
+            
+        }
+        for (int j = plateau[i].size() - 1; j > 0; j--){ // Tour de boucle pour remettre les tuiles après les avoir ajoutées
+            plateau = prochainCoup(plateau, i, j, "droite", "glissement");
+        }
+    }
+    return plateau;
+}
+
+Plateau déplacementGauche(Plateau plateau){
+     for (int i =0; i < plateau.size(); i++){
+        int loop = 0;
+        while(loop != 3){ // 3 tours de boucle dans le cas extrême où l'indice != 0 se trouve tout à droite
+            for (int j = 0; j < plateau[i].size() -1; j++){ // Déplace les tuiles vers la gauche
+                plateau = prochainCoup(plateau, i, j, "gauche", "glissement");
+            }
+            loop++;
+        }
+        for (int j = 0; j < plateau[i].size() - 1; j++){ // Assemble les tuiles consécutives égales
+            plateau = prochainCoup(plateau, i, j, "gauche", "somme");
+        }
+        for (int j = 0; j < plateau[i].size() -1; j++){ // Remets les tuiles après l'assemblage des tuiles
+            plateau = prochainCoup(plateau, i, j, "gauche", "glissement");
+        }
+    }
+    return plateau;
+}
+
+Plateau déplacementBas(Plateau plateau){
+    for (int i = 0; i < plateau.size(); i++){
+        int loop = 0;
+        while (loop != 3){
+            for (int j = plateau[i].size() - 1; j > 0; j--){
+                plateau = prochainCoup(plateau, i, j, "bas", "glissement");
+            }
+            loop++;
+        }
+        for (int j = plateau[i].size() - 1; j > 0; j--){
+            plateau = prochainCoup(plateau, i, j, "bas", "somme");
+        }
+        for (int j = plateau[i].size() - 1; j > 0; j--){
+            plateau = prochainCoup(plateau, i, j, "bas", "glissement");
+        }
+    }
+    return plateau;
+}
+
+Plateau déplacementHaut(Plateau plateau){
+    for (int i = 0; i<plateau.size(); i++){
+        int loop = 0;
+        while(loop != 3){
+            for (int j = 0; j < plateau[i].size() - 1; j++){
+                plateau = prochainCoup(plateau, i, j, "haut", "glissement");
+            }
+            loop++;
+        }
+        for (int j = 0; j<plateau[i].size() - 1; j++){
+            plateau = prochainCoup(plateau, i, j, "haut", "somme");
+        }
+        for (int j = 0; j < plateau[i].size() - 1; j++){
+            plateau = prochainCoup(plateau, i, j, "haut", "glissement");
+        }
+    }
+    return plateau;
+}
+
+Plateau déplacement(Plateau plateau, char Touche){
+    if (Touche == 'z'){
+        plateau = déplacementHaut(plateau);
+        cout << "Score : " << Score(plateau)  << endl;
+        return plateau;
+    }
+    if (Touche == 'q'){
+        plateau = déplacementGauche(plateau);
+        cout << "Score : " << Score(plateau)  << endl;
+        return plateau;
+    }
+    if (Touche == 's'){
+        plateau = déplacementBas(plateau);
+        cout << "Score : " << Score(plateau)  << endl;
+        return plateau;
+    }
+    if (Touche == 'd'){
+        plateau = déplacementDroite(plateau);
+        cout << "Score : " << Score(plateau)  << endl;
+        return plateau;
+    }
+    cout << "La touche n'est pas reconnue..." << endl;
+    return plateau;
+}
+
+void dessinebis(Plateau p){
+    int espacement = 5; // Taille d'une case (longueur en cractères)
+    for (int ligne = 0; ligne < p.size(); ligne++){
+        for (int i = 0; i < espacement * 4 + 5; i++){ // 4 * la taille d'une case pour les 4 cases + la séparation des cases et extremités
+            cout << "*"; // Première ligne de "*"
+        }
+        cout << endl;
+        for (int colonne = 0; colonne < p[0].size(); colonne++){
+            if (p[ligne][colonne] == 0){
+                cout << "*" << setw(espacement) << " "; // Reserve un espace de "espacement" ; cas vide donc ne n'affiche aucun entier
+            }
+            else{
+                string valeur = to_string(p[ligne][colonne]);
+                int taille = (to_string(p[ligne][colonne])).size();
+                if (taille == 1){ // Si p[ligne][colonne] < 10 (composé de 1 ou 2 chiffres)
+                    valeur.push_back(' ');
+                    valeur.push_back(' ');
+                }
+                else if (taille <= 4){ // Si p[ligne][colonne] < 10000 (le nombre contient 3 ou 4 chiffres)
+                    valeur.push_back(' ');
+                }
+                cout << "*" << setw(espacement) << valeur << RESET;
+            }
+        }
+        cout << "*" << endl;
+    }
+    for (int i = 0; i < espacement * 4 + 5; i++){
+            cout << "*"; // Dernière ligne de "*"
+        }
+    cout << endl;
+}
+
+bool estEgal(Plateau plateau, Plateau plateau1){
+    for (int i = 0; i < plateau.size(); i++){
+        for (int j = 0; j < plateau[i].size(); j++){
+            if (plateau[i][j] != plateau1[i][j]){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+bool estGagnant(Plateau plateau){
+    for(int i = 0; i < plateau.size(); i++){
+        for (int k = 0; k < plateau[0].size(); k++){
+            if (plateau[i][k] == 2048){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+void test(){
+    char Touche;
+    cout << "Test rapide que les fonctions marchent..." << endl;
+    cout << "Affichage du plateau vide..." << endl;
+    dessinebis(plateauVide());
+    cout << "Affichage du plateau initial..." << endl;
+    Plateau t2;
+    Plateau t4;
+    t2 = plateauInitial();
+    t4 = plateauInitial();
+    dessinebis(t2);
+    dessinebis(t4);
+    cout << "Ok, maintenant on teste de déplacer le tableau..." << endl;
+    cout << "Entre Z,Q,S ou D pour déplacer le tableau..." << endl;
+    cin >> Touche;
+    dessinebis(déplacement(t2,Touche));
+    dessinebis(déplacement(t4,Touche));
+}
+
+void testVilain(){
+    vector<vector<int>>(t);
+    t = vector<vector<int>>(4);
+    // t = {{0,0,0,0},{0,0,4,16},{0,0,0,0},{0,0,0,0}};
+    // if (estEgal(déplacementDroite({{0,0,0,0},{2,2,8,8},{0,0,0,0},{0,0,0,0}}),t)){
+    //     cout << "atchoum" << endl;
+    // }
+    // t = {{0,0,0,0},{0,0,4,8},{0,0,0,0},{0,0,0,0}};
+    // if (estEgal(déplacementDroite({{0,0,0,0},{0,4,4,4},{0,0,0,0},{0,0,0,0}}),t)){
+    //     cout << "à tes souhaits" << endl;
+    // }
+    // t = {{0,0,0,0},{0,0,2,4},{0,0,0,0},{0,0,0,0}};
+    // if (estEgal(déplacementDroite({{0,0,0,0},{2,2,0,2},{0,0,0,0},{0,0,0,0}}),t)){ // working OK
+    //     cout << "merce" << endl;
+    // }
+    // t = {{2048,0,16,10000},{0,0,4,16},{0,32,0,0},{0,4096,128,0}};
+    // dessinebis(t);
+    t = {{0,0,0,2},{2,0,0,0},{2,0,0,0},{4,8,4,0}};
+    dessinebis(déplacementHaut(t));
+}
+
+int main(){
+    ASCII2048();
+    this_thread::sleep_for(chrono::milliseconds(800));
+    Tutoriel();
+    // Déroulement d'une partie 
+    Plateau t;
+    char Touche; 
+    t = plateauInitial();
+    dessinebis(t);
+    while(true){
+        cout << "Choisi une touche entre Z,Q,S,D !" << endl;
+        cin >> Touche;
+        cout << "Voici le plateau après ton déplacement !" << endl;
+        t = déplacement(t,Touche);
+        dessinebis(t);
+        cout << "Voici le tableau après un placement aléatoire !" << endl;
+        t = plateauPlacementAléatoire(t);
+        dessinebis(t);
+     }
+    // testVilain();
+}
