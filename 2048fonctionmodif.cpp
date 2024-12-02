@@ -17,6 +17,36 @@
 #define CYAN    "\033[36m"      /* Cyan */
 
 using namespace std;
+
+void HighScoreTXT(){
+    string nom;
+    cout << "Quel est ton nom pour cette partie ?";
+    cin >> nom;
+    ofstream fichier("highscore.txt");
+    fichier.open("highscore.txt");
+    if (fichier){
+        cout << nom << " ";
+        fichier.close();
+    }
+    else {
+        cout << "erreur à l'ouverture de highscore.txt" << endl;
+    }
+}
+
+void HighScoreFinal(int score){
+    ofstream fichier("highscore.txt");
+    fichier.open("highscore.txt");
+    if (fichier){
+        cout << score << endl;
+        fichier.close();
+    }
+    else {
+        cout << "erreur à l'ouverture de highscore.txt" << endl;
+    }
+}
+
+
+
 using Plateau = vector<vector<int>>;
 // !!!!!!!!!!!!! SUPER IMPORTANT !!!!!!!!!!!!! si tu veux compiler, il faut rajouter -lncurses en argument
 // pour la bibliothèque curses.h :
@@ -220,79 +250,71 @@ Plateau prochainCoup(Plateau plateau, int ligne, int colonne, string direction, 
 }
 
 Plateau déplacementDroite(Plateau plateau){
-    for(int i = 0; i < plateau.size();i++){
-        int loop = 0;
-        while (loop != 3){ // 3 tours de boucle dans le cas extrême où l'indice != 0 se trouve tout à gauche
-            for (int j = plateau[i].size() - 1; j > 0; j--){ // Déplace les tuiles vers la droite
-                plateau = prochainCoup(plateau, i, j, "droite", "glissement");
-            }
-            loop++;
-        }
-        for (int j = plateau[i].size() - 1; j > 0 ; j--){ // Si deux tuiles consécutives sont égales 
-            plateau = prochainCoup(plateau, i, j, "droite", "somme");
-            
-        }
-        for (int j = plateau[i].size() - 1; j > 0; j--){ // Tour de boucle pour remettre les tuiles après les avoir ajoutées
-            plateau = prochainCoup(plateau, i, j, "droite", "glissement");
-        }
-    }
-    return plateau;
-}
 
-Plateau déplacementGauche(Plateau plateau){
-     for (int i =0; i < plateau.size(); i++){
-        int loop = 0;
-        while(loop != 3){ // 3 tours de boucle dans le cas extrême où l'indice != 0 se trouve tout à droite
-            for (int j = 0; j < plateau[i].size() -1; j++){ // Déplace les tuiles vers la gauche
-                plateau = prochainCoup(plateau, i, j, "gauche", "glissement");
-            }
-            loop++;
-        }
-        for (int j = 0; j < plateau[i].size() - 1; j++){ // Assemble les tuiles consécutives égales
-            plateau = prochainCoup(plateau, i, j, "gauche", "somme");
-        }
-        for (int j = 0; j < plateau[i].size() -1; j++){ // Remets les tuiles après l'assemblage des tuiles
-            plateau = prochainCoup(plateau, i, j, "gauche", "glissement");
-        }
+    for(int i = 0; i < plateau.size();i++){
+       for(int k = 0; k < 3; k++){
+            for (int j = plateau[i].size() - 1; j > 0; j--){ // Déplace les tuiles vers la droite
+                if (plateau[i][j-1] != 0 and plateau[i][j] == 0){
+                    plateau[i][j] = plateau[i][j-1];
+                    plateau[i][j-1] = 0;
+                }
+                if (plateau[i][j-1] == plateau[i][j]){
+                    plateau[i][j] *= 2;
+                    plateau[i][j-1] = 0;
+                }
+        }}
     }
     return plateau;
 }
+Plateau déplacementGauche(Plateau plateau){
+     for (int i =0; i < plateau.size(); i++){ //Lignes
+         for(int k = 0; k < 3; k++){
+         for (int j = 0; j < plateau[i].size() -1; j++){ //Colonnes
+                if (plateau[i][j] == 0 and plateau[i][j+1] != 0){
+                    plateau[i][j] = plateau[i][j+1];
+                    plateau[i][j+1] = 0;
+                }
+                if (plateau[i][j+1] == plateau[i][j]){
+                    plateau[i][j] *= 2;
+                    plateau[i][j+1] = 0;
+                }
+            }
+        }}
+        return plateau;
+        }
 
 Plateau déplacementBas(Plateau plateau){
     for (int i = 0; i < plateau.size(); i++){
-        int loop = 0;
-        while (loop != 3){
+        for(int k = 0; k < 3; k++){
             for (int j = plateau[i].size() - 1; j > 0; j--){
-                plateau = prochainCoup(plateau, i, j, "bas", "glissement");
+                if (plateau[j-1][i] != 0 and plateau[j][i] == 0){
+                    plateau[j][i] = plateau[j-1][i];
+                    plateau[j-1][i] = 0;
+                }
+                if (plateau[j-1][i] == plateau[j][i]){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
+                    plateau[j][i] *= 2;
+                    plateau[j-1][i] = 0;
+                }
             }
-            loop++;
-        }
-        for (int j = plateau[i].size() - 1; j > 0; j--){
-            plateau = prochainCoup(plateau, i, j, "bas", "somme");
-        }
-        for (int j = plateau[i].size() - 1; j > 0; j--){
-            plateau = prochainCoup(plateau, i, j, "bas", "glissement");
-        }
-    }
+        }}
     return plateau;
 }
 
+
 Plateau déplacementHaut(Plateau plateau){
     for (int i = 0; i<plateau.size(); i++){
-        int loop = 0;
-        while(loop != 3){
+        for(int k =0; k<3; k++){
             for (int j = 0; j < plateau[i].size() - 1; j++){
-                plateau = prochainCoup(plateau, i, j, "haut", "glissement");
+                if (plateau[j][i] == 0 and plateau[j+1][i] != 0){
+                    plateau[j][i] = plateau[j+1][i];
+                    plateau[j+1][i] = 0;
+                }
+                if (plateau[j][i] == plateau[j+1][i]){
+                    plateau[j][i] *= 2;
+                    plateau[j+1][i] = 0;
+                }}
             }
-            loop++;
         }
-        for (int j = 0; j<plateau[i].size() - 1; j++){
-            plateau = prochainCoup(plateau, i, j, "haut", "somme");
-        }
-        for (int j = 0; j < plateau[i].size() - 1; j++){
-            plateau = prochainCoup(plateau, i, j, "haut", "glissement");
-        }
-    }
     return plateau;
 }
 
@@ -413,6 +435,26 @@ void testVilain(){
     dessinebis(déplacementHaut(t));
 }
 
+bool ConditionFinDeJeu(Plateau t){
+    int comptecases = 0;
+    for(int i = 0; i < t.size(); i++){
+        for (int k = 0; k < t[0].size(); k++){
+        if (t[i][k]!=0){
+            comptecases++;
+        }
+        if (t[i][k]==2048){
+            cout << "GAME !" << endl;
+            return false;
+        }
+        }}
+
+    if (comptecases >= 16){
+        cout << "Jeu saturé, partie perdue :/" << endl;
+        return false;
+    }
+    return true;
+}
+
 int main(){
     ASCII2048();
     this_thread::sleep_for(chrono::milliseconds(800));
@@ -422,7 +464,7 @@ int main(){
     char Touche; 
     t = plateauInitial();
     dessinebis(t);
-    while(true){
+    while(ConditionFinDeJeu(t) == true){
         cout << "Choisi une touche entre Z,Q,S,D !" << endl;
         cin >> Touche;
         cout << "Voici le plateau après ton déplacement !" << endl;
