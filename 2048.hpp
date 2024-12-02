@@ -1,9 +1,26 @@
 #include <vector>
 #include <string>
+#include <iostream>
 using namespace std;
 
 using Plateau = vector<vector<int>>;
 // A faire documentation déplacement() et dessinebis()
+
+void testVilain();
+
+void HighScoreTXT();
+
+void HighScoreFinal(int score);
+
+void ASCII2048();
+
+void dessinebis(Plateau plateau);
+
+bool ConditionFinDeJeu(Plateau plateau);
+
+Plateau plateauPlacementAléatoire(Plateau plateau);
+
+Plateau déplacement(Plateau plateau, char Touche);
 
 /** Affiche les règles du 2048
  * @return un affichage selon la réponse à la question

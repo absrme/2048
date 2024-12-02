@@ -9,6 +9,7 @@
 #include <fstream> 
 #include <chrono>
 #include <thread>
+#include "2048.hpp"
 
 #define RESET   "\033[0m"
 #define WHITE   "\033[37m"      /* White */
@@ -17,47 +18,34 @@
 #define CYAN    "\033[36m"      /* Cyan */
 
 using namespace std;
+using Plateau = vector<vector<int>>;
 
 void HighScoreTXT(){
     string nom;
     cout << "Quel est ton nom pour cette partie ?";
     cin >> nom;
-    ofstream fichier("highscore.txt");
+    ofstream fichier;
     fichier.open("highscore.txt");
     if (fichier){
-        cout << nom << " ";
+        fichier << nom << " ";
         fichier.close();
     }
     else {
-        cout << "erreur à l'ouverture de highscore.txt" << endl;
+        fichier << "erreur à l'ouverture de highscore.txt" << endl;
+        fichier.close();
     }
 }
 
 void HighScoreFinal(int score){
-    ofstream fichier("highscore.txt");
+    ofstream fichier;
     fichier.open("highscore.txt");
     if (fichier){
-        cout << score << endl;
+        fichier << score << endl;
         fichier.close();
     }
     else {
         cout << "erreur à l'ouverture de highscore.txt" << endl;
     }
-}
-
-
-
-using Plateau = vector<vector<int>>;
-// !!!!!!!!!!!!! SUPER IMPORTANT !!!!!!!!!!!!! si tu veux compiler, il faut rajouter -lncurses en argument
-// pour la bibliothèque curses.h :
-// sudo apt-get install libncurses5-dev libncursesw5-dev
-// Petite modification à faire sur le score pour avoir le changement seulement lorsque deux cases se somment
-// Rattraper le cas lorsque l'utilisateur ne mets pas un char
-// Manque fonct° s'il n'y a plus de mouvements possible
-
-void HighScoreTXT(){ 
-    ofstream outfile ("highscore.txt");
-    // METTRE NAME
 }
 
 void ASCII2048(){
@@ -184,135 +172,104 @@ Plateau plateauPlacementAléatoire(Plateau t){
     return t;
 }
 
-// void affichePlateau(Plateau t){
-//     for (int i = 0; i < t.size();i++){
-//         for (int k = 0; k < t[i].size(); k++){
-//             cout << t[i][k] << " "; //affiche les cases du tableau de la ligne i
-//         }
-//         cout << endl; //retour à la ligne avant de passer à la ligne suivante
-//     }
-// }
+bool lignePlateauRemplie(Plateau plateau, int ligne){
+    for (int i = 0; i < plateau.size(); i++){
+        if (plateau[ligne][i] == 0){
+            return false;
+        }
+    }
+    return true;
+}
 
-Plateau prochainCoup(Plateau plateau, int ligne, int colonne, string direction, string mouvement){
-    if (direction == "droite"){
-        if (plateau[ligne][colonne] == plateau[ligne][colonne - 1] and mouvement == "somme"){
-            plateau[ligne][colonne] *= 2;
+bool colonnePlateauRemplie(Plateau plateau, int colonne){
+    for (int i = 0; i < plateau.size(); i++){
+        if (plateau[i][colonne] == 0){
+            return false;
         }
-        else if (plateau[ligne][colonne] == 0 and plateau[ligne][colonne - 1] != 0 and mouvement == "glissement"){
-            plateau[ligne][colonne] = plateau[ligne][colonne - 1];
-        }
-        else {
-            return plateau;
-        }
-        plateau[ligne][colonne - 1] = 0;
-        return plateau;
     }
-    if (direction == "gauche"){
-        if(plateau[ligne][colonne] == plateau[ligne][colonne + 1] and mouvement == "somme"){
-            plateau[ligne][colonne] *= 2;
-        }
-        else if (plateau[ligne][colonne] == 0 and plateau[ligne][colonne + 1] != 0 and mouvement == "glissement"){
-            plateau[ligne][colonne] = plateau[ligne][colonne + 1];
-        }
-        else {
-            return plateau;
-        }
-        plateau[ligne][colonne + 1] = 0;
-        return plateau;
-    }
-    if (direction == "bas"){
-        if(plateau[colonne][ligne] == plateau[colonne - 1][ligne] and mouvement == "somme"){
-            plateau[colonne][ligne] *= 2;
-        }
-        else if(plateau[colonne][ligne] == 0 and plateau[colonne - 1][ligne] != 0 and mouvement == "glissement"){
-            plateau[colonne][ligne] = plateau[colonne - 1][ligne];
-        }
-        else {
-            return plateau;
-        }
-        plateau[colonne - 1][ligne] = 0;
-        return plateau;
-    }
-    if (direction == "haut"){
-        if(plateau[colonne][ligne] == plateau[colonne + 1][ligne] and mouvement == "somme"){
-            plateau[colonne][ligne] *= 2;
-        }
-        else if (plateau[colonne][ligne] == 0 and plateau[colonne + 1][ligne] != 0 and mouvement == "glissement"){
-            plateau[colonne][ligne] = plateau[colonne + 1][ligne];
-        }
-        else {
-            return plateau;
-        }
-        plateau[colonne + 1][ligne] = 0;
-        return plateau;
-    }
-    return plateau;
+    return true;
 }
 
 Plateau déplacementDroite(Plateau plateau){
-
     for(int i = 0; i < plateau.size();i++){
-       for(int k = 0; k < 3; k++){
+        int coup = 1;
+        if (lignePlateauRemplie(plateau, i)){
+            coup = 0;
+        }
+        for(int k = 0; k < 3; k++){
             for (int j = plateau[i].size() - 1; j > 0; j--){ // Déplace les tuiles vers la droite
                 if (plateau[i][j-1] != 0 and plateau[i][j] == 0){
                     plateau[i][j] = plateau[i][j-1];
                     plateau[i][j-1] = 0;
                 }
-                if (plateau[i][j-1] == plateau[i][j]){
+                if (plateau[i][j-1] == plateau[i][j] and coup < 2){
                     plateau[i][j] *= 2;
                     plateau[i][j-1] = 0;
+                    coup++;
                 }
-        }}
+            }
+        }
     }
     return plateau;
 }
+
 Plateau déplacementGauche(Plateau plateau){
-     for (int i =0; i < plateau.size(); i++){ //Lignes
-         for(int k = 0; k < 3; k++){
-         for (int j = 0; j < plateau[i].size() -1; j++){ //Colonnes
+    for (int i = 0; i < plateau.size(); i++){
+        int coup = 1;
+        if (lignePlateauRemplie(plateau, i)){
+            coup = 0;
+        }
+        for(int k = 0; k < 3; k++){
+            for (int j = 0; j < plateau[i].size() -1; j++){ //Colonnes
                 if (plateau[i][j] == 0 and plateau[i][j+1] != 0){
                     plateau[i][j] = plateau[i][j+1];
                     plateau[i][j+1] = 0;
                 }
-                if (plateau[i][j+1] == plateau[i][j]){
+                if (plateau[i][j+1] == plateau[i][j] and coup < 2){
                     plateau[i][j] *= 2;
                     plateau[i][j+1] = 0;
+                    coup++;
                 }
             }
-        }}
-        return plateau;
         }
-
-Plateau déplacementBas(Plateau plateau){
-    for (int i = 0; i < plateau.size(); i++){
-        for(int k = 0; k < 3; k++){
-            for (int j = plateau[i].size() - 1; j > 0; j--){
-                if (plateau[j-1][i] != 0 and plateau[j][i] == 0){
-                    plateau[j][i] = plateau[j-1][i];
-                    plateau[j-1][i] = 0;
-                }
-                if (plateau[j-1][i] == plateau[j][i]){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
-                    plateau[j][i] *= 2;
-                    plateau[j-1][i] = 0;
-                }
-            }
-        }}
+    }
     return plateau;
 }
 
+Plateau déplacementBas(Plateau plateau){
+    for (int i = 0; i < plateau.size(); i++){
+        int somme = 0; 
+            for(int k = 0; k < 3; k++){
+                for (int j = plateau[i].size() - 1; j > 0; j--){
+                    if (plateau[j-1][i] != 0 and plateau[j][i] == 0){
+                        plateau[j][i] = plateau[j-1][i];
+                        plateau[j-1][i] = 0;
+                        somme++;
+                    }
+                    if (plateau[j-1][i] == plateau[j][i] and somme < 2){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
+                        plateau[j][i] *= 2;
+                        plateau[j-1][i] = 0;
+                        somme++;
+                    }
+                }
+            }
+        }
+    return plateau;
+}
 
 Plateau déplacementHaut(Plateau plateau){
     for (int i = 0; i<plateau.size(); i++){
-        for(int k =0; k<3; k++){
+        for(int k = 0; k < 3; k++){
             for (int j = 0; j < plateau[i].size() - 1; j++){
-                if (plateau[j][i] == 0 and plateau[j+1][i] != 0){
-                    plateau[j][i] = plateau[j+1][i];
-                    plateau[j+1][i] = 0;
+                    if (plateau[j][i] == 0 and plateau[j+1][i] != 0){
+                        plateau[j][i] = plateau[j+1][i];
+                        plateau[j+1][i] = 0;
+                    }
+                    if (plateau[j][i] == plateau[j+1][i]){
+                        plateau[j][i] *= 2;
+                        plateau[j+1][i] = 0;
+                    }
                 }
-                if (plateau[j][i] == plateau[j+1][i]){
-                    plateau[j][i] *= 2;
-                    plateau[j+1][i] = 0;
-                }}
             }
         }
     return plateau;
@@ -344,7 +301,7 @@ Plateau déplacement(Plateau plateau, char Touche){
 }
 
 void dessinebis(Plateau p){
-    int espacement = 5; // Taille d'une case (longueur en cractères)
+    int espacement = 5;
     for (int ligne = 0; ligne < p.size(); ligne++){
         for (int i = 0; i < espacement * 4 + 5; i++){ // 4 * la taille d'une case pour les 4 cases + la séparation des cases et extremités
             cout << "*"; // Première ligne de "*"
@@ -395,84 +352,76 @@ bool estGagnant(Plateau plateau){
     }
     return false;
 }
-void test(){
-    char Touche;
-    cout << "Test rapide que les fonctions marchent..." << endl;
-    cout << "Affichage du plateau vide..." << endl;
-    dessinebis(plateauVide());
-    cout << "Affichage du plateau initial..." << endl;
-    Plateau t2;
-    Plateau t4;
-    t2 = plateauInitial();
-    t4 = plateauInitial();
-    dessinebis(t2);
-    dessinebis(t4);
-    cout << "Ok, maintenant on teste de déplacer le tableau..." << endl;
-    cout << "Entre Z,Q,S ou D pour déplacer le tableau..." << endl;
-    cin >> Touche;
-    dessinebis(déplacement(t2,Touche));
-    dessinebis(déplacement(t4,Touche));
-}
+// void test(){
+//     char Touche;
+//     cout << "Test rapide que les fonctions marchent..." << endl;
+//     cout << "Affichage du plateau vide..." << endl;
+//     dessinebis(plateauVide());
+//     cout << "Affichage du plateau initial..." << endl;
+//     Plateau t2;
+//     Plateau t4;
+//     t2 = plateauInitial();
+//     t4 = plateauInitial();
+//     dessinebis(t2);
+//     dessinebis(t4);
+//     cout << "Ok, maintenant on teste de déplacer le tableau..." << endl;
+//     cout << "Entre Z,Q,S ou D pour déplacer le tableau..." << endl;
+//     cin >> Touche;
+//     dessinebis(déplacement(t2,Touche));
+//     dessinebis(déplacement(t4,Touche));
+// }
 
 void testVilain(){
     vector<vector<int>>(t);
     t = vector<vector<int>>(4);
-    // t = {{0,0,0,0},{0,0,4,16},{0,0,0,0},{0,0,0,0}};
-    // if (estEgal(déplacementDroite({{0,0,0,0},{2,2,8,8},{0,0,0,0},{0,0,0,0}}),t)){
-    //     cout << "atchoum" << endl;
-    // }
-    // t = {{0,0,0,0},{0,0,4,8},{0,0,0,0},{0,0,0,0}};
-    // if (estEgal(déplacementDroite({{0,0,0,0},{0,4,4,4},{0,0,0,0},{0,0,0,0}}),t)){
-    //     cout << "à tes souhaits" << endl;
-    // }
-    // t = {{0,0,0,0},{0,0,2,4},{0,0,0,0},{0,0,0,0}};
-    // if (estEgal(déplacementDroite({{0,0,0,0},{2,2,0,2},{0,0,0,0},{0,0,0,0}}),t)){ // working OK
-    //     cout << "merce" << endl;
-    // }
+    t = {{0,0,0,0},{0,0,4,16},{0,0,0,0},{0,0,0,0}};
+    if (estEgal(déplacementDroite({{0,0,0,0},{2,2,8,8},{0,0,0,0},{0,0,0,0}}),t)){
+        cout << "atchoum" << endl;
+    }
+    t = {{0,0,0,0},{0,0,4,8},{0,0,0,0},{0,0,0,0}};
+    if (estEgal(déplacementDroite({{0,0,0,0},{0,4,4,4},{0,0,0,0},{0,0,0,0}}),t)){
+        cout << "à tes souhaits" << endl;
+    }
+    t = {{0,0,0,0},{0,0,2,4},{0,0,0,0},{0,0,0,0}};
+    if (estEgal(déplacementDroite({{0,0,0,0},{2,2,0,2},{0,0,0,0},{0,0,0,0}}),t)){ // working OK
+        cout << "merce" << endl;
+    }
+    t = {{0,0,4,4},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+    if (estEgal(déplacementDroite({{2,2,2,2},{0,0,0,0},{0,0,0,0},{0,0,0,0}}),t)){ // working OK
+        cout << "SAUVE" << endl;
+    }
+    t = {{0,0,4,4},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+    if (estEgal(déplacementDroite({{0,2,2,4},{0,0,0,0},{0,0,0,0},{0,0,0,0}}),t)){
+        cout << "rizz" << endl;
+    }
     // t = {{2048,0,16,10000},{0,0,4,16},{0,32,0,0},{0,4096,128,0}};
     // dessinebis(t);
-    t = {{0,0,0,2},{2,0,0,0},{2,0,0,0},{4,8,4,0}};
-    dessinebis(déplacementHaut(t));
+    // t = {{0,0,0,2},{2,0,0,0},{2,0,0,0},{4,8,4,0}};
+    // dessinebis(déplacementHaut(t));
+}
+bool déplacementPossible(Plateau plateau){
+    if (estEgal(plateau, déplacementDroite(plateau)) and estEgal(plateau, déplacementGauche(plateau)) and estEgal(plateau, déplacementHaut(plateau)) and estEgal(plateau, déplacementBas(plateau))){
+        return false;
+    }
+    else return true;
 }
 
 bool ConditionFinDeJeu(Plateau t){
     int comptecases = 0;
     for(int i = 0; i < t.size(); i++){
         for (int k = 0; k < t[0].size(); k++){
-        if (t[i][k]!=0){
-            comptecases++;
+            if (t[i][k]!=0){
+                comptecases++;
+            }
+            if (t[i][k]==2048){
+                cout << "GAME !" << endl;
+                return false;
+            }
         }
-        if (t[i][k]==2048){
-            cout << "GAME !" << endl;
-            return false;
-        }
-        }}
-
-    if (comptecases >= 16){
+    }
+    if (comptecases >= 16 and not(déplacementPossible(t))){
         cout << "Jeu saturé, partie perdue :/" << endl;
         return false;
     }
     return true;
-}
-
-int main(){
-    ASCII2048();
-    this_thread::sleep_for(chrono::milliseconds(800));
-    Tutoriel();
-    // Déroulement d'une partie 
-    Plateau t;
-    char Touche; 
-    t = plateauInitial();
-    dessinebis(t);
-    while(ConditionFinDeJeu(t) == true){
-        cout << "Choisi une touche entre Z,Q,S,D !" << endl;
-        cin >> Touche;
-        cout << "Voici le plateau après ton déplacement !" << endl;
-        t = déplacement(t,Touche);
-        dessinebis(t);
-        cout << "Voici le tableau après un placement aléatoire !" << endl;
-        t = plateauPlacementAléatoire(t);
-        dessinebis(t);
-     }
-    // testVilain();
 }
