@@ -238,18 +238,15 @@ Plateau déplacementGauche(Plateau plateau){
 
 Plateau déplacementBas(Plateau plateau){
     for (int i = 0; i < plateau.size(); i++){
-        int somme = 0; 
             for(int k = 0; k < 3; k++){
                 for (int j = plateau[i].size() - 1; j > 0; j--){
                     if (plateau[j-1][i] != 0 and plateau[j][i] == 0){
                         plateau[j][i] = plateau[j-1][i];
                         plateau[j-1][i] = 0;
-                        somme++;
                     }
-                    if (plateau[j-1][i] == plateau[j][i] and somme < 2){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
+                    if (plateau[j-1][i] == plateau[j][i]){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
                         plateau[j][i] *= 2;
                         plateau[j-1][i] = 0;
-                        somme++;
                     }
                 }
             }
