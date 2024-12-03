@@ -175,18 +175,18 @@ Plateau plateauVide(){
     return t;
 }
 
-Plateau plateauInitial(){
-    Plateau t;
-    int ligne;
-    int colonne;
-    t = plateauVide();
-    for(int i = 0; i < 2; i++){ //2 tours de boucle pour 2 cases aléatoires
-        ligne = rand() % 4; // Choisi aléatoirement un indice de ligne entre 0 et 3
-        colonne = rand() % 4; // De même pour la colonne
-        t[ligne][colonne] = tireDeuxOuQuatre(); //la case du tableau aléatoire
-    }
-    return t; //retour du tableau
-}
+// Plateau plateauInitial(){
+//     Plateau t;
+//     int ligne;
+//     int colonne;
+//     t = plateauVide();
+//     for(int i = 0; i < 2; i++){ //2 tours de boucle pour 2 cases aléatoires
+//         ligne = rand() % 4; // Choisi aléatoirement un indice de ligne entre 0 et 3
+//         colonne = rand() % 4; // De même pour la colonne
+//         t[ligne][colonne] = tireDeuxOuQuatre(); //la case du tableau aléatoire
+//     }
+//     return t; //retour du tableau
+// }
 
 Plateau plateauPlacementAléatoire(Plateau t){
     int ligne; 
@@ -201,14 +201,28 @@ Plateau plateauPlacementAléatoire(Plateau t){
     }
     return t;
 }
-
+Plateau plateauInitial(){
+    Plateau t;
+    int ligne;
+    int colonne;
+    t = plateauVide();
+    for(int i = 0; i < 2; i++){ //2 tours de boucle pour 2 cases aléatoires
+        ligne = rand() % 4; // Choisi aléatoirement un indice de ligne entre 0 et 3
+        colonne = rand() % 4; // De même pour la colonne
+        t[ligne][colonne] = tireDeuxOuQuatre(); //la case du tableau aléatoire
+    }
+    return t; //renvoie le tableau
+}
 bool lignePlateauRemplie(Plateau plateau, int ligne){
     for (int i = 0; i < plateau.size(); i++){
         if (plateau[ligne][i] == 0){
             return false;
         }
     }
-    return true;
+    if (plateau[ligne][0] == plateau[ligne][1] and plateau[ligne][2] == plateau[ligne][3]){
+        return true;
+    }
+    return false;
 }
 
 bool colonnePlateauRemplie(Plateau plateau, int colonne){
@@ -217,7 +231,10 @@ bool colonnePlateauRemplie(Plateau plateau, int colonne){
             return false;
         }
     }
-    return true;
+    if (plateau[0][colonne] == plateau[1][colonne] and plateau[2][colonne] == plateau[3][colonne]){
+        return true;
+    }
+    return false;
 }
 
 Plateau déplacementDroite(Plateau plateau){
@@ -232,7 +249,7 @@ Plateau déplacementDroite(Plateau plateau){
                     plateau[i][j] = plateau[i][j-1];
                     plateau[i][j-1] = 0;
                 }
-                if (plateau[i][j-1] == plateau[i][j] and coup <= 2){
+                if (plateau[i][j-1] == plateau[i][j] and plateau[i][j] != 0 and coup < 2){
                     plateau[i][j] *= 2;
                     plateau[i][j-1] = 0;
                     score = score + plateau[i][j];
@@ -249,6 +266,7 @@ Plateau déplacementGauche(Plateau plateau){
         int coup = 1;
         if (lignePlateauRemplie(plateau, i)){
             coup = 0;
+            cout << "cc" << endl;
         }
         for(int k = 0; k < 3; k++){
             for (int j = 0; j < plateau[i].size() -1; j++){ //Colonnes
@@ -256,7 +274,7 @@ Plateau déplacementGauche(Plateau plateau){
                     plateau[i][j] = plateau[i][j+1];
                     plateau[i][j+1] = 0;
                 }
-                if (plateau[i][j+1] == plateau[i][j] and coup <= 2){
+                if (plateau[i][j+1] == plateau[i][j] and plateau[i][j] != 0 and coup < 2){
                     plateau[i][j] *= 2;
                     plateau[i][j+1] = 0;
                     score = score + plateau[i][j];
@@ -280,7 +298,7 @@ Plateau déplacementBas(Plateau plateau){
                     plateau[j][i] = plateau[j-1][i];
                     plateau[j-1][i] = 0;
                 }
-                if (plateau[j-1][i] == plateau[j][i] and coup <= 2){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
+                if (plateau[j-1][i] == plateau[j][i] and plateau[j][i] != 0 and coup < 2){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
                     plateau[j][i] *= 2;
                     plateau[j-1][i] = 0;
                     score = score + plateau[i][j];
@@ -300,19 +318,20 @@ Plateau déplacementHaut(Plateau plateau){
         }
         for(int k = 0; k < 3; k++){
             for (int j = 0; j < plateau[i].size() - 1; j++){
-                    if (plateau[j][i] == 0 and plateau[j+1][i] != 0){
-                        plateau[j][i] = plateau[j+1][i];
-                        plateau[j+1][i] = 0;
-                    }
-                    if (plateau[j][i] == plateau[j+1][i] and coup <= 2){
-                        plateau[j][i] *= 2;
-                        plateau[j+1][i] = 0;
-                        score = score + plateau[i][j];
-                        coup++;
-                    }
+                if (plateau[j][i] == 0 and plateau[j+1][i] != 0){
+                    plateau[j][i] = plateau[j+1][i];
+                    plateau[j+1][i] = 0;
+                }
+                if (plateau[j][i] == plateau[j+1][i] and plateau[j][i] != 0 and coup < 2){
+                    cout << plateau[i][j] << endl;
+                    plateau[j][i] = plateau[j][i] * 2;
+                    plateau[j+1][i] = 0;
+                    score = score + plateau[i][j];
+                    coup++;
                 }
             }
         }
+    }
     return plateau;
 }
 
