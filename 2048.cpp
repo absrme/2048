@@ -12,13 +12,16 @@
 #include "2048.hpp"
 
 #define RESET   "\033[0m"
-#define WHITE   "\033[37m"      /* White */
-#define BLUE    "\033[34m"      /* Blue */
-#define MAGENTA "\033[35m"      /* Magenta */
-#define CYAN    "\033[36m"      /* Cyan */
+#define WHITE   "\033[37m"
+#define BLUE    "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN    "\033[36m"
+#define GREEN   "\033[32m"
 
 using namespace std;
 using Plateau = vector<vector<int>>;
+
+int score = 0;
 
 void HighScoreTXT(){
     string nom;
@@ -96,8 +99,8 @@ void Win(){
 
 
 
-)" << endl; }
-
+    )" << endl; 
+}
 
 void Tutoriel(){
     char reponse;
@@ -229,9 +232,10 @@ Plateau déplacementDroite(Plateau plateau){
                     plateau[i][j] = plateau[i][j-1];
                     plateau[i][j-1] = 0;
                 }
-                if (plateau[i][j-1] == plateau[i][j] and coup < 2){
+                if (plateau[i][j-1] == plateau[i][j] and coup <= 2){
                     plateau[i][j] *= 2;
                     plateau[i][j-1] = 0;
+                    score = score + plateau[i][j];
                     coup++;
                 }
             }
@@ -252,9 +256,10 @@ Plateau déplacementGauche(Plateau plateau){
                     plateau[i][j] = plateau[i][j+1];
                     plateau[i][j+1] = 0;
                 }
-                if (plateau[i][j+1] == plateau[i][j] and coup < 2){
+                if (plateau[i][j+1] == plateau[i][j] and coup <= 2){
                     plateau[i][j] *= 2;
                     plateau[i][j+1] = 0;
+                    score = score + plateau[i][j];
                     coup++;
                 }
             }
@@ -265,33 +270,45 @@ Plateau déplacementGauche(Plateau plateau){
 
 Plateau déplacementBas(Plateau plateau){
     for (int i = 0; i < plateau.size(); i++){
-            for(int k = 0; k < 3; k++){
-                for (int j = plateau[i].size() - 1; j > 0; j--){
-                    if (plateau[j-1][i] != 0 and plateau[j][i] == 0){
-                        plateau[j][i] = plateau[j-1][i];
-                        plateau[j-1][i] = 0;
-                    }
-                    if (plateau[j-1][i] == plateau[j][i]){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
-                        plateau[j][i] *= 2;
-                        plateau[j-1][i] = 0;
-                    }
+        int coup = 1;
+        if (colonnePlateauRemplie(plateau, i)){
+            coup = 0;
+        }
+        for(int k = 0; k < 3; k++){
+            for (int j = plateau[i].size() - 1; j > 0; j--){
+                if (plateau[j-1][i] != 0 and plateau[j][i] == 0){
+                    plateau[j][i] = plateau[j-1][i];
+                    plateau[j-1][i] = 0;
+                }
+                if (plateau[j-1][i] == plateau[j][i] and coup <= 2){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
+                    plateau[j][i] *= 2;
+                    plateau[j-1][i] = 0;
+                    score = score + plateau[i][j];
+                    coup++;
                 }
             }
         }
+    }
     return plateau;
 }
 
 Plateau déplacementHaut(Plateau plateau){
-    for (int i = 0; i<plateau.size(); i++){
+    for (int i = 0; i < plateau.size(); i++){
+        int coup = 1;
+        if (colonnePlateauRemplie(plateau, i)){
+            coup = 0;
+        }
         for(int k = 0; k < 3; k++){
             for (int j = 0; j < plateau[i].size() - 1; j++){
                     if (plateau[j][i] == 0 and plateau[j+1][i] != 0){
                         plateau[j][i] = plateau[j+1][i];
                         plateau[j+1][i] = 0;
                     }
-                    if (plateau[j][i] == plateau[j+1][i]){
+                    if (plateau[j][i] == plateau[j+1][i] and coup <= 2){
                         plateau[j][i] *= 2;
                         plateau[j+1][i] = 0;
+                        score = score + plateau[i][j];
+                        coup++;
                     }
                 }
             }
@@ -345,7 +362,7 @@ void dessinebis(Plateau p){
                 else if (taille <= 4){ // Si p[ligne][colonne] < 10000 (le nombre contient 3 ou 4 chiffres)
                     valeur.push_back(' ');
                 }
-                cout << "*" << setw(espacement) << valeur << RESET;
+                cout << "*" << BLUE << setw(espacement) << valeur << RESET;
             }
         }
         cout << "*" << endl;
@@ -422,6 +439,7 @@ void testVilain(){
     // dessinebis(t);
     // t = {{0,0,0,2},{2,0,0,0},{2,0,0,0},{4,8,4,0}};
     // dessinebis(déplacementHaut(t));
+    
 }
 bool déplacementPossible(Plateau plateau){
     if (estEgal(plateau, déplacementDroite(plateau)) and estEgal(plateau, déplacementGauche(plateau)) and estEgal(plateau, déplacementHaut(plateau)) and estEgal(plateau, déplacementBas(plateau))){
@@ -434,41 +452,18 @@ bool ConditionFinDeJeu(Plateau t){
     int comptecases = 0;
     for(int i = 0; i < t.size(); i++){
         for (int k = 0; k < t[0].size(); k++){
-        if (t[i][k]!=0){
-            comptecases++;
+            if (t[i][k]!=0){
+                comptecases++;
+            }
+            if (t[i][k]==2048){
+                cout << "GAME !" << endl;
+                return false;
+            }
         }
-        if (t[i][k]==2048){
-            return false;
-        }
-        }}
-
-    if (comptecases >= 16){
+    }
+    if (comptecases >= 16 and not(déplacementPossible(t))){
         cout << "Jeu saturé, partie perdue :/" << endl;
-        GameOver();
         return false;
     }
     return true;
-}
-
-int main(){
-    //Initialisation
-    Plateau t;
-    char Touche;
-    //Cosmétiques
-    ASCII2048();
-    Tutoriel();
-    HighScoreTXT();
-    // Déroulement de la partie partie
-    t = plateauVide();
-    plateauInitial(t);
-    dessinebis(t);
-    while(ConditionFinDeJeu(t)==true){
-        cout << "Score : " << score << endl;
-        cout << "Choisis une touche entre Z,Q,S,D !" << endl;
-        cin >> Touche;
-        t = déplacement(t,Touche);
-        dessinebis(t);
-        t = plateauPlacementAléatoire(t);
-        dessinebis(t);
-     }
 }
