@@ -71,6 +71,33 @@ void ASCII2048(){
     )" << endl;
 }
 
+void GameOver(){
+    cout << R"(
+
+         ▗▄▄▖ ▗▄▖ ▗▖  ▗▖▗▄▄▄▖     ▗▄▖ ▗▖  ▗▖▗▄▄▄▖▗▄▄▖
+        ▐▌   ▐▌ ▐▌▐▛▚▞▜▌▐▌       ▐▌ ▐▌▐▌  ▐▌▐▌   ▐▌ ▐▌
+        ▐▌▝▜▌▐▛▀▜▌▐▌  ▐▌▐▛▀▀▘    ▐▌ ▐▌▐▌  ▐▌▐▛▀▀▘▐▛▀▚▖
+        ▝▚▄▞▘▐▌ ▐▌▐▌  ▐▌▐▙▄▄▖    ▝▚▄▞▘ ▝▚▞▘ ▐▙▄▄▖▐▌ ▐▌
+
+
+
+
+ )" << endl;
+}
+
+void Win(){
+    cout << R"(
+
+        ▗▖ ▗▖▗▄▄▄▖▗▖  ▗▖
+        ▐▌ ▐▌  █  ▐▛▚▖▐▌
+        ▐▌ ▐▌  █  ▐▌ ▝▜▌
+        ▐▙█▟▌▗▄█▄▖▐▌  ▐▌
+
+
+
+
+)" << endl; }
+
 
 void Tutoriel(){
     char reponse;
@@ -407,18 +434,41 @@ bool ConditionFinDeJeu(Plateau t){
     int comptecases = 0;
     for(int i = 0; i < t.size(); i++){
         for (int k = 0; k < t[0].size(); k++){
-            if (t[i][k]!=0){
-                comptecases++;
-            }
-            if (t[i][k]==2048){
-                cout << "GAME !" << endl;
-                return false;
-            }
+        if (t[i][k]!=0){
+            comptecases++;
         }
-    }
-    if (comptecases >= 16 and not(déplacementPossible(t))){
+        if (t[i][k]==2048){
+            return false;
+        }
+        }}
+
+    if (comptecases >= 16){
         cout << "Jeu saturé, partie perdue :/" << endl;
+        GameOver();
         return false;
     }
     return true;
+}
+
+int main(){
+    //Initialisation
+    Plateau t;
+    char Touche;
+    //Cosmétiques
+    ASCII2048();
+    Tutoriel();
+    HighScoreTXT();
+    // Déroulement de la partie partie
+    t = plateauVide();
+    plateauInitial(t);
+    dessinebis(t);
+    while(ConditionFinDeJeu(t)==true){
+        cout << "Score : " << score << endl;
+        cout << "Choisis une touche entre Z,Q,S,D !" << endl;
+        cin >> Touche;
+        t = déplacement(t,Touche);
+        dessinebis(t);
+        t = plateauPlacementAléatoire(t);
+        dessinebis(t);
+     }
 }
