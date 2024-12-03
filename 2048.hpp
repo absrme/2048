@@ -18,6 +18,10 @@ void dessinebis(Plateau plateau);
 
 bool ConditionFinDeJeu(Plateau plateau);
 
+void Win();
+
+void GameOver();
+
 Plateau plateauPlacementAléatoire(Plateau plateau);
 
 Plateau déplacement(Plateau plateau, char Touche);

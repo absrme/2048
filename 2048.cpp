@@ -175,18 +175,18 @@ Plateau plateauVide(){
     return t;
 }
 
-// Plateau plateauInitial(){
-//     Plateau t;
-//     int ligne;
-//     int colonne;
-//     t = plateauVide();
-//     for(int i = 0; i < 2; i++){ //2 tours de boucle pour 2 cases aléatoires
-//         ligne = rand() % 4; // Choisi aléatoirement un indice de ligne entre 0 et 3
-//         colonne = rand() % 4; // De même pour la colonne
-//         t[ligne][colonne] = tireDeuxOuQuatre(); //la case du tableau aléatoire
-//     }
-//     return t; //retour du tableau
-// }
+Plateau plateauInitial(){
+    Plateau t;
+    int ligne;
+    int colonne;
+    t = plateauVide();
+    for(int i = 0; i < 2; i++){ //2 tours de boucle pour 2 cases aléatoires
+        ligne = rand() % 4; // Choisi aléatoirement un indice de ligne entre 0 et 3
+        colonne = rand() % 4; // De même pour la colonne
+        t[ligne][colonne] = tireDeuxOuQuatre(); //la case du tableau aléatoire
+    }
+    return t; //retour du tableau
+}
 
 Plateau plateauPlacementAléatoire(Plateau t){
     int ligne; 
@@ -201,18 +201,7 @@ Plateau plateauPlacementAléatoire(Plateau t){
     }
     return t;
 }
-Plateau plateauInitial(){
-    Plateau t;
-    int ligne;
-    int colonne;
-    t = plateauVide();
-    for(int i = 0; i < 2; i++){ //2 tours de boucle pour 2 cases aléatoires
-        ligne = rand() % 4; // Choisi aléatoirement un indice de ligne entre 0 et 3
-        colonne = rand() % 4; // De même pour la colonne
-        t[ligne][colonne] = tireDeuxOuQuatre(); //la case du tableau aléatoire
-    }
-    return t; //renvoie le tableau
-}
+
 bool lignePlateauRemplie(Plateau plateau, int ligne){
     for (int i = 0; i < plateau.size(); i++){
         if (plateau[ligne][i] == 0){
@@ -266,7 +255,6 @@ Plateau déplacementGauche(Plateau plateau){
         int coup = 1;
         if (lignePlateauRemplie(plateau, i)){
             coup = 0;
-            cout << "cc" << endl;
         }
         for(int k = 0; k < 3; k++){
             for (int j = 0; j < plateau[i].size() -1; j++){ //Colonnes
@@ -323,7 +311,6 @@ Plateau déplacementHaut(Plateau plateau){
                     plateau[j+1][i] = 0;
                 }
                 if (plateau[j][i] == plateau[j+1][i] and plateau[j][i] != 0 and coup < 2){
-                    cout << plateau[i][j] << endl;
                     plateau[j][i] = plateau[j][i] * 2;
                     plateau[j+1][i] = 0;
                     score = score + plateau[i][j];
@@ -464,23 +451,25 @@ bool déplacementPossible(Plateau plateau){
     if (estEgal(plateau, déplacementDroite(plateau)) and estEgal(plateau, déplacementGauche(plateau)) and estEgal(plateau, déplacementHaut(plateau)) and estEgal(plateau, déplacementBas(plateau))){
         return false;
     }
-    else return true;
+    else {
+        return true;
+    }
 }
 
 bool ConditionFinDeJeu(Plateau t){
     int comptecases = 0;
     for(int i = 0; i < t.size(); i++){
         for (int k = 0; k < t[0].size(); k++){
-            if (t[i][k]!=0){
+            if (t[i][k] != 0){
                 comptecases++;
             }
-            if (t[i][k]==2048){
+            if (t[i][k] == 2048){
                 cout << "GAME !" << endl;
                 return false;
             }
         }
     }
-    if (comptecases >= 16 and not(déplacementPossible(t))){
+    if (comptecases == 16 and not(déplacementPossible(t))){
         cout << "Jeu saturé, partie perdue :/" << endl;
         return false;
     }
