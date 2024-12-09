@@ -224,7 +224,7 @@ Plateau déplacementDroite(Plateau plateau){
             coup = 0;
         }
         for(int k = 0; k < 3; k++){
-            for (int j = plateau[i].size() - 1; j > 0; j--){ // Déplace les tuiles vers la droite
+            for (int j = plateau[i].size() - 1; j > 0; j--){
                 if (plateau[i][j-1] != 0 and plateau[i][j] == 0){
                     plateau[i][j] = plateau[i][j-1];
                     plateau[i][j-1] = 0;
@@ -248,7 +248,7 @@ Plateau déplacementGauche(Plateau plateau){
             coup = 0;
         }
         for(int k = 0; k < 3; k++){
-            for (int j = 0; j < plateau[i].size() -1; j++){ //Colonnes
+            for (int j = 0; j < plateau[i].size() -1; j++){
                 if (plateau[i][j] == 0 and plateau[i][j+1] != 0){
                     plateau[i][j] = plateau[i][j+1];
                     plateau[i][j+1] = 0;
@@ -280,7 +280,7 @@ Plateau déplacementBas(Plateau plateau){
                 if (plateau[j-1][i] == plateau[j][i] and plateau[j][i] != 0 and coup < 2){
                     plateau[j][i] *= 2;
                     plateau[j-1][i] = 0;
-                    score = score + plateau[i][j];
+                    score = score + plateau[j][i];
                     coup++;
                 }
             }
@@ -304,7 +304,7 @@ Plateau déplacementHaut(Plateau plateau){
                 if (plateau[j][i] == plateau[j+1][i] and plateau[j][i] != 0 and coup < 2){
                     plateau[j][i] = plateau[j][i] * 2;
                     plateau[j+1][i] = 0;
-                    score = score + plateau[i][j];
+                    score = score + plateau[j][i];
                     coup++;
                 }
             }
@@ -316,7 +316,7 @@ Plateau déplacementHaut(Plateau plateau){
 Plateau déplacement(Plateau plateau, char Touche){
     while (Touche != 'z' and Touche != 'q' and Touche != 's' and Touche != 'd'){
         cout << "La touche n'est pas reconnue..." << endl;
-        cout << "Choisi une touche entre Z,Q,S,D !" << endl;
+        cout << "Choisi une touche entre z,q,s,d !" << endl;
         cin >> Touche;
     }
     if (Touche == 'z'){
@@ -343,6 +343,7 @@ Plateau déplacement(Plateau plateau, char Touche){
 }
 
 void dessinebis(Plateau p){
+    cout << "Score : " << score << endl;
     int espacement = 5;
     for (int ligne = 0; ligne < p.size(); ligne++){
         for (int i = 0; i < espacement * 4 + 5; i++){ // 4 * la taille d'une case pour les 4 cases + la séparation des cases et extremités
