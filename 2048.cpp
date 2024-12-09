@@ -11,6 +11,8 @@
 #include <thread>
 #include "2048.hpp"
 
+// sudo apt-get install libsfml-dev
+
 #define RESET   "\033[0m"
 #define WHITE   "\033[37m"
 #define BLUE    "\033[34m"
@@ -52,7 +54,7 @@ void HighScoreFinal(int score){
 }
 
 void ASCII2048(){
-    cout << R"(
+    cout << GREEN << R"(
 
                                               ,---.-,    
                                        ,--,  '   ,'  '.  
@@ -71,7 +73,7 @@ void ASCII2048(){
     `---'            `---`           '--'   \   \   .'   
                                              `---`-'     
     
-    )" << endl;
+    )" << RESET << endl;
 }
 
 void GameOver(){
@@ -142,15 +144,6 @@ void Tutoriel(){
     }
 }
 
-int Score(Plateau plateau){
-    int score = 0;
-    for(int i = 0; i<plateau.size(); i++){
-        for (int j = 0; j<plateau[i].size(); j++){
-            score = score + plateau[i][j];
-        }
-    }
-    return score;
-}
 int tireDeuxOuQuatre(){
     int proba = 1 + rand() % 10;
     if (proba <= 9){
@@ -286,7 +279,7 @@ Plateau déplacementBas(Plateau plateau){
                     plateau[j][i] = plateau[j-1][i];
                     plateau[j-1][i] = 0;
                 }
-                if (plateau[j-1][i] == plateau[j][i] and plateau[j][i] != 0 and coup < 2){ // Si la case d'au dessus est égale à la case actuelle dans la boucle
+                if (plateau[j-1][i] == plateau[j][i] and plateau[j][i] != 0 and coup < 2){
                     plateau[j][i] *= 2;
                     plateau[j-1][i] = 0;
                     score = score + plateau[i][j];
@@ -325,22 +318,22 @@ Plateau déplacementHaut(Plateau plateau){
 Plateau déplacement(Plateau plateau, char Touche){
     if (Touche == 'z'){
         plateau = déplacementHaut(plateau);
-        cout << "Score : " << Score(plateau)  << endl;
+        cout << "Score : " << score << endl;
         return plateau;
     }
     if (Touche == 'q'){
         plateau = déplacementGauche(plateau);
-        cout << "Score : " << Score(plateau)  << endl;
+        cout << "Score : " << score << endl;
         return plateau;
     }
     if (Touche == 's'){
         plateau = déplacementBas(plateau);
-        cout << "Score : " << Score(plateau)  << endl;
+        cout << "Score : " << score << endl;
         return plateau;
     }
     if (Touche == 'd'){
         plateau = déplacementDroite(plateau);
-        cout << "Score : " << Score(plateau)  << endl;
+        cout << "Score : " << score << endl;
         return plateau;
     }
     cout << "La touche n'est pas reconnue..." << endl;
@@ -368,7 +361,7 @@ void dessinebis(Plateau p){
                 else if (taille <= 4){ // Si p[ligne][colonne] < 10000 (le nombre contient 3 ou 4 chiffres)
                     valeur.push_back(' ');
                 }
-                cout << "*" << BLUE << setw(espacement) << valeur << RESET;
+                cout << "*" << GREEN << setw(espacement) << valeur << RESET;
             }
         }
         cout << "*" << endl;
@@ -464,13 +457,13 @@ bool ConditionFinDeJeu(Plateau t){
                 comptecases++;
             }
             if (t[i][k] == 2048){
-                cout << "GAME !" << endl;
+                Win();
                 return false;
             }
         }
     }
     if (comptecases == 16 and not(déplacementPossible(t))){
-        cout << "Jeu saturé, partie perdue :/" << endl;
+        GameOver();
         return false;
     }
     return true;
