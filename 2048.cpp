@@ -11,8 +11,6 @@
 #include <thread>
 #include "2048.hpp"
 
-// sudo apt-get install libsfml-dev
-
 #define RESET   "\033[0m"
 #define WHITE   "\033[37m"
 #define BLUE    "\033[34m"
@@ -316,6 +314,11 @@ Plateau déplacementHaut(Plateau plateau){
 }
 
 Plateau déplacement(Plateau plateau, char Touche){
+    while (Touche != 'z' and Touche != 'q' and Touche != 's' and Touche != 'd'){
+        cout << "La touche n'est pas reconnue..." << endl;
+        cout << "Choisi une touche entre Z,Q,S,D !" << endl;
+        cin >> Touche;
+    }
     if (Touche == 'z'){
         plateau = déplacementHaut(plateau);
         cout << "Score : " << score << endl;
@@ -336,7 +339,6 @@ Plateau déplacement(Plateau plateau, char Touche){
         cout << "Score : " << score << endl;
         return plateau;
     }
-    cout << "La touche n'est pas reconnue..." << endl;
     return plateau;
 }
 
@@ -382,64 +384,7 @@ bool estEgal(Plateau plateau, Plateau plateau1){
     }
     return true;
 }
-bool estGagnant(Plateau plateau){
-    for(int i = 0; i < plateau.size(); i++){
-        for (int k = 0; k < plateau[0].size(); k++){
-            if (plateau[i][k] == 2048){
-                return true;
-            }
-        }
-    }
-    return false;
-}
-// void test(){
-//     char Touche;
-//     cout << "Test rapide que les fonctions marchent..." << endl;
-//     cout << "Affichage du plateau vide..." << endl;
-//     dessinebis(plateauVide());
-//     cout << "Affichage du plateau initial..." << endl;
-//     Plateau t2;
-//     Plateau t4;
-//     t2 = plateauInitial();
-//     t4 = plateauInitial();
-//     dessinebis(t2);
-//     dessinebis(t4);
-//     cout << "Ok, maintenant on teste de déplacer le tableau..." << endl;
-//     cout << "Entre Z,Q,S ou D pour déplacer le tableau..." << endl;
-//     cin >> Touche;
-//     dessinebis(déplacement(t2,Touche));
-//     dessinebis(déplacement(t4,Touche));
-// }
 
-void testVilain(){
-    vector<vector<int>>(t);
-    t = vector<vector<int>>(4);
-    t = {{0,0,0,0},{0,0,4,16},{0,0,0,0},{0,0,0,0}};
-    if (estEgal(déplacementDroite({{0,0,0,0},{2,2,8,8},{0,0,0,0},{0,0,0,0}}),t)){
-        cout << "atchoum" << endl;
-    }
-    t = {{0,0,0,0},{0,0,4,8},{0,0,0,0},{0,0,0,0}};
-    if (estEgal(déplacementDroite({{0,0,0,0},{0,4,4,4},{0,0,0,0},{0,0,0,0}}),t)){
-        cout << "à tes souhaits" << endl;
-    }
-    t = {{0,0,0,0},{0,0,2,4},{0,0,0,0},{0,0,0,0}};
-    if (estEgal(déplacementDroite({{0,0,0,0},{2,2,0,2},{0,0,0,0},{0,0,0,0}}),t)){ // working OK
-        cout << "merce" << endl;
-    }
-    t = {{0,0,4,4},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
-    if (estEgal(déplacementDroite({{2,2,2,2},{0,0,0,0},{0,0,0,0},{0,0,0,0}}),t)){ // working OK
-        cout << "SAUVE" << endl;
-    }
-    t = {{0,0,4,4},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
-    if (estEgal(déplacementDroite({{0,2,2,4},{0,0,0,0},{0,0,0,0},{0,0,0,0}}),t)){
-        cout << "rizz" << endl;
-    }
-    // t = {{2048,0,16,10000},{0,0,4,16},{0,32,0,0},{0,4096,128,0}};
-    // dessinebis(t);
-    // t = {{0,0,0,2},{2,0,0,0},{2,0,0,0},{4,8,4,0}};
-    // dessinebis(déplacementHaut(t));
-    
-}
 bool déplacementPossible(Plateau plateau){
     if (estEgal(plateau, déplacementDroite(plateau)) and estEgal(plateau, déplacementGauche(plateau)) and estEgal(plateau, déplacementHaut(plateau)) and estEgal(plateau, déplacementBas(plateau))){
         return false;
@@ -462,9 +407,11 @@ bool ConditionFinDeJeu(Plateau t){
             }
         }
     }
-    if (comptecases == 16 and not(déplacementPossible(t))){
-        GameOver();
-        return false;
+    if (comptecases == 16){
+        if (not(déplacementPossible(t))){
+            GameOver();
+            return false;
+        }
     }
     return true;
 }

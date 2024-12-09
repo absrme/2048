@@ -6,15 +6,35 @@ using namespace std;
 using Plateau = vector<vector<int>>;
 // A faire documentation déplacement() et dessinebis()
 
-/**testVilain : test**/
-void testVilain();
+/** Permet de savoir si deux plateaux sont égaux
+ * @param plateau le premier plateau
+ * @param plateau1 le second plateau
+ * @return true si les plateaux sont égaux, false sinon
+ **/
+bool estEgal(Plateau plateau, Plateau plateau1);
 
-/**HighScoreTXT : crée un ficher qui va stocker le nom du joueur et son score**/
+/** Fonction indiquant si une ligne est remplie et que celle-ci 
+ * comporte 2 doublons consécutifs
+ * @param plateau le plateau
+ * @param ligne un entier
+ * @return true si la ligne est remplie et comporte 2 doublons consécutifs, false sinon
+ */
+bool lignePlateauRemplie(Plateau plateau, int ligne);
+
+/** Fonction indiquant si une colonne est remplie et que celle-ci 
+ * comporte 2 doublons consécutifs
+ * @param plateau le plateau
+ * @param colonne un entier
+ * @return true si la colonne est remplie et comporte 2 doublons consécutifs, false sinon
+ */
+bool colonnePlateauRemplie(Plateau plateau, int colonne);
+
+/** Crée un ficher qui va stocker le nom du joueur et son score **/
 void HighScoreTXT();
 
-/**HighScoreFinal : ecrit le score dans le fichier en fin de partie et l'enregistre
-* @param score : int
-**/
+/** Ecrit dans le fichier highscore.txt le score de la partie
+ * @param score un entier le score de la partie
+ **/
 void HighScoreFinal(int score);
 
 /*ASCII2048 : affiche en ASCII "2048"*/
@@ -26,34 +46,31 @@ void Win();
 /*GameOver : affiche "GAME OVER" en ASCII*/
 void GameOver();
 
-/**dessinebis : affiche le plateau ( "*" et puissances de 2)
-* @param plateau
-**/
+/** Affiche le plateau avec des "*"
+ * @param plateau le plateau
+ */
 void dessinebis(Plateau plateau);
 
-/**ConditionFinDeJeu : determine si la partie est gagnée ou perdue
-* @param plateau 
-* @return false : si gagnée ou perdue
-* @return true : si toujours jouable
-**/
+/** Détermine si la partie est gagnée ou perdue
+ * @param plateau 
+ * @return false : si la partie gagnée ou perdue, true sinon
+ **/
 bool ConditionFinDeJeu(Plateau plateau);
 
-/**plateauPlacementAléatoire : place aléatoirement 2 (9/10 chances) ou 4 (1/10 chances)
+/** Place aléatoirement 2 (9 chances sur 10) ou 4 (1 chance sur 10)
 * @param plateau : plateau
-* @return plateau : plateau modifié avec le nombre aléatoire en plus 
+* @return plateau : plateau modifié avec le nombre aléatoire placé
 **/
 Plateau plateauPlacementAléatoire(Plateau plateau);
 
-/**déplacement : déplace le plateau en fonctions des touches entrées
+/** Déplace le plateau en fonctions des touches entrées
  * @param plateau : plateau du jeu
  * @param Touche : touche entrée par le joueur
- * @return plateau : plateau déplacé
+ * @return plateau : plateau déplacé selon la touche entrée
 **/
 Plateau déplacement(Plateau plateau, char Touche);
 
-/** Affiche les règles du 2048
- * @return un affichage selon la réponse à la question
-**/
+/* Affiche les règles du 2048 */
 void Tutoriel();
 
 /** Calcule le score à un instant de la partie
@@ -61,6 +78,7 @@ void Tutoriel();
  * @return le score
 **/
 int Score(Plateau plateau);
+
 /** génère aléatoirement un 2 ou un 4 avec des probabilités respectives de 9/10 et 1/10
  *  @return 2 ou 4
  **/
@@ -75,12 +93,6 @@ Plateau plateauVide();
  *  @return un plateau en début de jeu
  **/
 Plateau plateauInitial();
-
-/** Ajoute un élément dans le plateau aléatoirement
- * @param plateau le plateau
- * @return le plateau avec une nouvelle case contenant 2 ou 4 placé aléatoirement (dans une case vide)
- */
-Plateau plateauPartie(Plateau plateau);
 
 /** déplace les tuiles d'un plateau vers la gauche et les combine si possible
  *  @param plateau le plateau
@@ -106,23 +118,6 @@ Plateau déplacementHaut(Plateau plateau);
  *  @return le plateau une fois déplacé vers le bas
  **/
 Plateau déplacementBas(Plateau plateau);
-
-/** déplace les tuiles d'un plateau dans la direction donnée et génère une nouvelle tuile si le déplacement est valide
- *  @param plateau le plateau
- *  @param direction la direction
- *  @return le plateau déplacé dans la direction
- **/
-// Plateau déplacement(Plateau plateau, int direction);
-/** affiche un plateau
- * @param p le plateau
- **/
-string dessine(Plateau p);
-
-/** permet de savoir si une partie est terminée
- *  @param plateau un plateau
- *  @return true si le plateau est vide, false sinon
- **/
-bool estTerminé(Plateau plateau);
 
 /** permet de savoir si une partie est gagnée
  * @param plateau un plateau
