@@ -394,6 +394,17 @@ bool déplacementPossible(Plateau plateau){
     }
 }
 
+bool jeuSaturé(Plateau plateau){
+    for (int i = 0; i < plateau.size(); i++){
+        for (int j = 0; j < plateau[i].size(); j++){
+            if (plateau[i][j] == 0){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 bool ConditionFinDeJeu(Plateau t){
     int comptecases = 0;
     for(int i = 0; i < t.size(); i++){

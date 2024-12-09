@@ -4,6 +4,7 @@ using namespace std;
 
 int main() {
     int c;
+    // initscr();
     keypad(stdscr, true);
     printw("Bonjour!\nIl est temps de presser quelques touches au clavier...\n");
     do {

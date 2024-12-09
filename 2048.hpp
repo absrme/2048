@@ -4,7 +4,19 @@
 using namespace std;
 
 using Plateau = vector<vector<int>>;
-// A faire documentation déplacement() et dessinebis()
+
+/** Fonction indiquant si le jeu est saturé 
+ * @param plateau le plateau du jeu
+ * @return false si le jeu n'est pas saturé 
+ * (cases non toutes remplies), true sinon
+ */
+bool jeuSaturé(Plateau plateau);
+
+/** Fonction indiquant si un déplacement est possible
+ * @param plateau le plateau du jeu
+ * @return false si aucun déplacement est possible, true sinon
+ */
+bool déplacementPossible(Plateau plateau);
 
 /** Permet de savoir si deux plateaux sont égaux
  * @param plateau le premier plateau

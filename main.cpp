@@ -12,18 +12,22 @@ int main(){
     system("clear");
     ASCII2048();
     this_thread::sleep_for(chrono::seconds(2));
+    Tutoriel();
     Plateau t;
     char Touche; 
     t = plateauInitial();
     dessinebis(t);
     // HighScoreTXT();
-    while(ConditionFinDeJeu(t)){
+    while(ConditionFinDeJeu(t) and déplacementPossible(t)){
         cout << "Choisi une touche entre Z,Q,S,D !" << endl;
         cin >> Touche;
         t = déplacement(t,Touche);
         system("clear");
         ASCII2048();
         dessinebis(t);
+        if (not(jeuSaturé)){
+            t = plateauPlacementAléatoire(t);
+        }
         t = plateauPlacementAléatoire(t);
         system("clear");
         ASCII2048();
