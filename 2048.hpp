@@ -6,35 +6,60 @@ using namespace std;
 using Plateau = vector<vector<int>>;
 // A faire documentation déplacement() et dessinebis()
 
+/**testVilain : test**/
 void testVilain();
 
+/**HighScoreTXT : crée un ficher qui va stocker le nom du joueur et son score**/
 void HighScoreTXT();
 
+/**HighScoreFinal : ecrit le score dans le fichier en fin de partie et l'enregistre
+* @param score : int
+**/
 void HighScoreFinal(int score);
 
+/*ASCII2048 : affiche en ASCII "2048"*/
 void ASCII2048();
 
-void dessinebis(Plateau plateau);
-
-bool ConditionFinDeJeu(Plateau plateau);
-
+/*Win : affiche "WIN" en ASCII*/
 void Win();
 
+/*GameOver : affiche "GAME OVER" en ASCII*/
 void GameOver();
 
+/**dessinebis : affiche le plateau ( "*" et puissances de 2)
+* @param plateau
+**/
+void dessinebis(Plateau plateau);
+
+/**ConditionFinDeJeu : determine si la partie est gagnée ou perdue
+* @param plateau 
+* @return false : si gagnée ou perdue
+* @return true : si toujours jouable
+**/
+bool ConditionFinDeJeu(Plateau plateau);
+
+/**plateauPlacementAléatoire : place aléatoirement 2 (9/10 chances) ou 4 (1/10 chances)
+* @param plateau : plateau
+* @return plateau : plateau modifié avec le nombre aléatoire en plus 
+**/
 Plateau plateauPlacementAléatoire(Plateau plateau);
 
-Plateau déplacement(Plateau plateau, char Touche);
+/**déplacement : déplace le plateau en fonctions des touches entrées
+ * @param plateau : plateau du jeu
+ * @param Touche : touche entrée par le joueur
+ * @return plateau : plateau déplacé
+**/
+Plateau déplacement(Plateau plateau, int Touche);
 
 /** Affiche les règles du 2048
  * @return un affichage selon la réponse à la question
- */
+**/
 void Tutoriel();
 
 /** Calcule le score à un instant de la partie
  * @param plateau un plateau 
  * @return le score
- */
+**/
 int Score(Plateau plateau);
 /** génère aléatoirement un 2 ou un 4 avec des probabilités respectives de 9/10 et 1/10
  *  @return 2 ou 4
