@@ -77,7 +77,7 @@ void ASCII2048(){
 }
 
 void GameOver(){
-    cout << R"(
+    cout << GREEN << R"(
 
          ▗▄▄▖ ▗▄▖ ▗▖  ▗▖▗▄▄▄▖     ▗▄▖ ▗▖  ▗▖▗▄▄▄▖▗▄▄▖
         ▐▌   ▐▌ ▐▌▐▛▚▞▜▌▐▌       ▐▌ ▐▌▐▌  ▐▌▐▌   ▐▌ ▐▌
@@ -87,11 +87,11 @@ void GameOver(){
 
 
 
- )" << endl;
+ )" << RESET << endl;
 }
 
 void Win(){
-    cout << R"(
+    cout << GREEN << R"(
 
         ▗▖ ▗▖▗▄▄▄▖▗▖  ▗▖
         ▐▌ ▐▌  █  ▐▛▚▖▐▌
@@ -101,7 +101,7 @@ void Win(){
 
 
 
-    )" << endl; 
+    )" << RESET << endl; 
 }
 
 void Tutoriel(){
