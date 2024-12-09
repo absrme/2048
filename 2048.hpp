@@ -49,7 +49,7 @@ Plateau plateauPlacementAléatoire(Plateau plateau);
  * @param Touche : touche entrée par le joueur
  * @return plateau : plateau déplacé
 **/
-Plateau déplacement(Plateau plateau, int Touche);
+Plateau déplacement(Plateau plateau, char Touche);
 
 /** Affiche les règles du 2048
  * @return un affichage selon la réponse à la question
